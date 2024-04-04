@@ -1,0 +1,14 @@
+.depend
+*.o
+__pycache__
+imgfscmd
+imgfscmd
+imgfs_server
+tcp-test-client
+tcp-test-server
+http-test-server
+
+*.xml
+*.html
+!index.html
+*.jpg

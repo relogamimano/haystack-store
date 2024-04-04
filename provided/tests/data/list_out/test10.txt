@@ -1,0 +1,26 @@
+*****************************************
+********** IMGFS HEADER START ***********
+TYPE: EPFL ImgFS 2024
+VERSION: 6
+IMAGE COUNT: 2		MAX IMAGES: 100
+THUMBNAIL: 64 x 64	SMALL: 256 x 256
+*********** IMGFS HEADER END ************
+*****************************************
+IMAGE ID: pic1
+SHA: 66ac648b32a8268ed0b350b184cfa04c00c6236af3a2aa4411c01518f6061af8
+VALID: 1
+UNUSED: 0
+OFFSET ORIG. : 21664		SIZE ORIG. : 72876
+OFFSET THUMB.: 208971		SIZE THUMB.: 12137
+OFFSET SMALL : 192659		SIZE SMALL : 16312
+ORIGINAL: 1200 x 800
+*****************************************
+IMAGE ID: pic3
+SHA: 1183f8ef10dcb4d87a1857bd16f9b5f8728a8d1ea6c9c7eb37ddfa1da01bff52
+VALID: 1
+UNUSED: 0
+OFFSET ORIG. : 250754		SIZE ORIG. : 369911
+OFFSET THUMB.: 0		SIZE THUMB.: 0
+OFFSET SMALL : 0		SIZE SMALL : 0
+ORIGINAL: 1200 x 800
+*****************************************
