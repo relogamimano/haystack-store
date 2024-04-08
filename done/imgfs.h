@@ -49,6 +49,32 @@ extern "C" {
  * **********************************************************************
  */
 
+struct imgfs_header {
+    char name[MAX_IMGFS_NAME]; 
+    unsigned int version; 
+    unsigned int nb_files; 
+    unsigned int max_files; 
+    unsigned short int resized_res[2*(NB_RES-1)]; 
+    unsigned int unused_32; 
+    unsigned long int unused_64; 
+}; 
+
+struct img_metadata{
+    char img_id[MAX_IMG_ID];
+    unsigned char SHA[SHA224_DIGEST_LENGTH]; 
+    unsigned int orig_res[2]; 
+    unsigned int size[NB_RES];
+    unsigned long int offset[NB_RES];
+    unsigned short int is_valid; 
+    unsigned short int unused_16; 
+};
+
+struct imgfs_file {
+    FILE* file; 
+    struct imgfs_header header; 
+    struct img_metadata* metadata; 
+};
+
 /**
  * @brief Prints imgFS header informations.
  *
@@ -172,3 +198,4 @@ int do_gbcollect(const char* imgfs_path, const char* imgfs_tmp_bkp_path);
 #ifdef __cplusplus
 }
 #endif
+
