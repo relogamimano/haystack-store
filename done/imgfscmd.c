@@ -14,6 +14,19 @@
 #include <stdlib.h>
 #include <string.h>
 
+typedef int (*command)(int argc, char* argv[]); 
+
+struct command_mapping {
+    const char* name; 
+    command command; 
+}; 
+
+struct command_mapping commands[] = {
+    {"list", do_list_cmd}, {"create", do_create_cmd}, {"delete", do_delete_cmd},{"help", help} 
+}; 
+
+
+
 
 /*******************************************************************************
  * MAIN
@@ -31,6 +44,17 @@ int main(int argc, char* argv[])
          */
 
         argc--; argv++; // skips command call name
+
+        int i; 
+        for(i = 0; i < 4; i++) {
+            if (strcmp(argv[0], commands[i].name) == 0) {
+                ret = commands[i].command(argc, argv); 
+                break;
+            }
+        }
+        if (i == 4) {
+            ret = ERR_INVALID_COMMAND; 
+        }
     }
 
     if (ret) {

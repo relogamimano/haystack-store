@@ -67,3 +67,45 @@ ORIGINAL: %" PRIu32 " x %" PRIu32 "\n",
     printf("*****************************************\n");
 }
 
+
+int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* file){
+
+    M_REQUIRE_NON_NULL(file); 
+
+    FILE* fp = fopen(file_name, opening_mode); 
+    if (fp == NULL) {
+        return ERR_IO; 
+    }
+
+    if (fread(&(file->header), sizeof(struct imgfs_header), 1, fp) != 1) {
+        fclose(fp); 
+        return ERR_IO; 
+    }
+
+    file->metadata = (struct imgfs_metadata*)malloc(sizeof(struct img_metadata) * file->header.nb_files);
+    if (file->metadata == NULL) {
+        fclose(fp);
+        return ERR_OUT_OF_MEMORY;
+    }
+
+    if (fread(file->metadata, sizeof(struct img_metadata), file->header.nb_files, fp) != file->header.nb_files) {
+        free(file->metadata);
+        fclose(fp);
+        return ERR_IO;
+    }
+
+    fclose(fp); 
+
+    return ERR_NONE; 
+}
+
+void do_close(struct imgfs_file* file) {
+    if (file == NULL) {
+        return;
+    }
+
+    free(file->metadata);
+
+    file->metadata = NULL;
+}
+

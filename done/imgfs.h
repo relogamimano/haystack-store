@@ -64,7 +64,7 @@ struct img_metadata{
     unsigned char SHA[SHA256_DIGEST_LENGTH]; 
     unsigned int orig_res[2]; 
     unsigned int size[NB_RES];
-    unsigned long int offset[NB_RES];
+    unsigned long int offset[NB_RES]; 
     unsigned short int is_valid; 
     unsigned short int unused_16; 
 };
