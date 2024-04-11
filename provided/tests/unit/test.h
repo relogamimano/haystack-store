@@ -123,6 +123,12 @@ static const char *const ERR_NAMES[] = {"ERR_FIRST",
         tcase_add_test(tc, Title);                                                                                     \
     } while (0)
 
+#if CHECK_MINOR_VERSION >= 13
+#define TEST_FUNCTION_POSTFIX "_fn"
+#else
+#define TEST_FUNCTION_POSTFIX ""
+#endif
+
 #define TEST_SUITE(get_suite)                                                                                          \
     int main(void) {                                                                           \
         SRunner *sr = srunner_create(get_suite());                                                                     \
@@ -140,7 +146,8 @@ static const char *const ERR_NAMES[] = {"ERR_FIRST",
                 strcat(buf, __FILE__);                                                                                 \
                 buf[strlen(buf) - 2] = 0; /* skip the trailing '.c' */                                                 \
                                                                                                                        \
-                printf("\033[31m|\033[000m Test %s failed. To run in gdb, use: \033[001mmake dbg TEST=%s "             \
+                printf("\033[31m|\033[000m Test %s failed. To run in gdb, use: \033[001mmake dbg "                     \
+                       "TEST=%s" TEST_FUNCTION_POSTFIX " "                                                             \
                        "EXE=%s\033[000m\n",                                                                            \
                        tr_tcname(results[i]), tr_tcname(results[i]), buf + 10);                                        \
             }                                                                                                          \

@@ -4,7 +4,6 @@
 CC = clang
 
 TARGETS := imgfsstruct imgfstools imgfslist
-TARGETS += imgfscreate imgfsdelete
 
 CFLAGS += -g
 
@@ -74,9 +73,7 @@ LDFLAGS += '-L$(SRC_DIR)'
 
 LDLIBS += -lcheck -lm -lrt -pthread -lsubunit -lcrypto
 
-OBJS = $(SRC_DIR)/imgfs_tools.o $(SRC_DIR)/imgfscmd_functions.o $(SRC_DIR)/util.o $(SRC_DIR)/imgfs_list.o
-
-OBJS += $(SRC_DIR)/imgfs_create.o $(SRC_DIR)/imgfs_delete.o
+OBJS = $(SRC_DIR)/imgfs_tools.o $(SRC_DIR)/imgfscmd_functions.o $(SRC_DIR)/util.o $(SRC_DIR)/imgfs_list.o 
 
 # ======================================================================
 unit-test-imgfsstruct.o: unit-test-imgfsstruct.c $(SRC_DIR)/imgfs.h
