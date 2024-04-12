@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
             }
         }
         if (i == 4) {
-            ret = ERR_INVALID_COMMAND; 
+            ret = ERR_INVALID_COMMAND;
         }
     }
 

@@ -46,6 +46,24 @@ int do_list_cmd(int argc, char** argv)
      * **********************************************************************
      */
 
+    if (argc < 2)  {
+        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    }
+
+    const char *files = argv[1]; 
+
+    struct imgfs_file imgfs_file;
+
+    int open = do_open(files, "rb", &imgfs_file);
+
+    if (open != ERR_NONE) {
+        return ERR_IO; 
+    }
+
+    do_list(&imgfs_file, STDOUT, NULL); 
+
+    do_close(&imgfs_file); 
+
     return ERR_NONE;
 }
 

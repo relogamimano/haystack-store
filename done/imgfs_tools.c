@@ -82,7 +82,7 @@ int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* 
         return ERR_IO; 
     }
 
-    file->metadata = (struct imgfs_metadata*)malloc(sizeof(struct img_metadata) * file->header.nb_files);
+    file->metadata = (struct img_metadata*)malloc(sizeof(struct img_metadata) * file->header.nb_files);
     if (file->metadata == NULL) {
         fclose(fp);
         return ERR_OUT_OF_MEMORY;
