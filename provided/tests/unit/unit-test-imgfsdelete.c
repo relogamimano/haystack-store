@@ -147,10 +147,10 @@ START_TEST(do_delete_cmd_correct)
 {
     start_test_print;
     DECLARE_DUMP;
-    DUPLICATE_FILE(dump, IMGFS("empty"));
+    DUPLICATE_FILE(dump, IMGFS("test02"));
 
     char *argv[] = {dump, "pic1"};
-    ck_assert_err(do_delete_cmd(2, argv), ERR_IMAGE_NOT_FOUND);
+    ck_assert_err_none(do_delete_cmd(2, argv));
 
     struct imgfs_file file;
     ck_assert_err_none(do_open(dump, "rb", &file));
@@ -174,6 +174,9 @@ Suite *imgfs_do_delete_test_suite()
     Add_Test(s, do_delete_read_only);
     Add_Test(s, do_delete_correct);
     Add_Test(s, do_delete_correct_order);
+    Add_Test(s, do_delete_cmd_null_params);
+    Add_Test(s, do_delete_cmd_image_not_found);
+    Add_Test(s, do_delete_cmd_correct);
 
     return s;
 }
