@@ -25,9 +25,21 @@ int do_list(const struct imgfs_file* imgfs_file,
     if (nbfiles == 0) {
         printf("<< empty imgFS >>\n");
         return ERR_NONE; 
-    } else {
+    }
         // TODO loop a travers toutes les images et print uniquement les valides 
         //print_metadata(&imgfs_file->metadata); 
+
+    int found_image = 0; 
+
+    for(int i = 0; i < imgfs_file->header.max_files; i++) {
+        if (imgfs_file->metadata[i].is_valid == NON_EMPTY) {
+            print_metadata(&imgfs_file->metadata[i]); 
+            found_image = 1; 
+        }
+    }
+
+    if (!found_image) {
+        printf("<< empty imgFS >>\n");
     }
 
     return ERR_NONE; 
