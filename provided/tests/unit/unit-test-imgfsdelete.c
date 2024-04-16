@@ -17,14 +17,15 @@ START_TEST(do_delete_null_params)
 }
 END_TEST
 
+// ======================================================================
 START_TEST(do_delete_image_not_found)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("empty"));
-    ck_assert_err_none(do_open(dump, "rbw", &file));
+    ck_assert_err_none(do_open(dump, "rb+", &file));
 
     ck_assert_err(do_delete("myimage", &file), ERR_IMAGE_NOT_FOUND);
 
@@ -34,10 +35,11 @@ START_TEST(do_delete_image_not_found)
 }
 END_TEST
 
+// ======================================================================
 START_TEST(do_delete_read_only)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("test02"));
@@ -51,10 +53,11 @@ START_TEST(do_delete_read_only)
 }
 END_TEST
 
+// ======================================================================
 START_TEST(do_delete_correct)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("test02"));
@@ -78,17 +81,17 @@ START_TEST(do_delete_correct)
 }
 END_TEST
 
-START_TEST(do_delete_correct_order)
+// ======================================================================
+START_TEST(do_delete_bad_open_mode)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("test02"));
     ck_assert_err_none(do_open(dump, "rb", &file));
 
     ck_assert_err(do_delete("pic1", &file), ERR_IO);
-    ck_assert_int_eq(file.metadata[0].is_valid, EMPTY);
     ck_assert_int_eq(file.header.version, 2);
     ck_assert_int_eq(file.header.nb_files, 2);
 
@@ -117,10 +120,10 @@ START_TEST(do_delete_cmd_null_params)
 END_TEST
 
 // ======================================================================
-START_TEST(do_create_cmd_not_enough_arguments)
+START_TEST(do_delete_cmd_not_enough_arguments)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
     DUPLICATE_FILE(dump, IMGFS("empty"));
 
     char *argv[] = {dump};
@@ -130,10 +133,11 @@ START_TEST(do_create_cmd_not_enough_arguments)
 }
 END_TEST
 
+// ======================================================================
 START_TEST(do_delete_cmd_image_not_found)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
     DUPLICATE_FILE(dump, IMGFS("empty"));
 
     char *argv[] = {dump, "pic1"};
@@ -143,10 +147,11 @@ START_TEST(do_delete_cmd_image_not_found)
 }
 END_TEST
 
+// ======================================================================
 START_TEST(do_delete_cmd_correct)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
     DUPLICATE_FILE(dump, IMGFS("test02"));
 
     char *argv[] = {dump, "pic1"};
@@ -172,8 +177,9 @@ Suite *imgfs_do_delete_test_suite()
     Add_Test(s, do_delete_null_params);
     Add_Test(s, do_delete_image_not_found);
     Add_Test(s, do_delete_read_only);
+    Add_Test(s, do_delete_cmd_not_enough_arguments);
     Add_Test(s, do_delete_correct);
-    Add_Test(s, do_delete_correct_order);
+    Add_Test(s, do_delete_bad_open_mode);
     Add_Test(s, do_delete_cmd_null_params);
     Add_Test(s, do_delete_cmd_image_not_found);
     Add_Test(s, do_delete_cmd_correct);

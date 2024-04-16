@@ -8,7 +8,7 @@ START_TEST(do_create_null_params)
 {
     start_test_print;
 
-    DECLARE_DUMP;
+    DECLARE_DUMP();
     struct imgfs_file file;
 
     ck_assert_invalid_arg(do_create(NULL, &file));
@@ -22,7 +22,7 @@ END_TEST
 START_TEST(do_create_correct)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     struct imgfs_file file = { .header.max_files = 10,
                                .header.resized_res = { 32, 32, 32, 32 } };
@@ -91,7 +91,7 @@ END_TEST
 START_TEST(do_create_cmd_invalid_flag)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     char *argv[] = {dump, "-invalid_flag", "13"};
     ck_assert_invalid_arg(do_create_cmd(3, argv));
@@ -142,7 +142,7 @@ END_TEST
 START_TEST(do_create_cmd_no_flags)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     char *argv[] = {dump};
     ck_assert_err_none(do_create_cmd(1, argv));
@@ -174,7 +174,7 @@ END_TEST
 START_TEST(do_create_cmd_all_flags)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     char *argv[] = {dump, "-max_files", "10", "-thumb_res", "32", "32", "-small_res", "64", "64"};
     ck_assert_err_none(do_create_cmd(9, argv));
@@ -206,7 +206,7 @@ END_TEST
 START_TEST(do_create_cmd_repeating_flags)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     char *argv[] = {dump, "-max_files", "10", "-max_files", "16",         "-thumb_res", "32",
                     "32", "-small_res", "64", "64",         "-small_res", "128",        "128"
@@ -240,7 +240,7 @@ END_TEST
 START_TEST(do_create_cmd_ignores_irrelevant_fields)
 {
     start_test_print;
-    DECLARE_DUMP;
+    DECLARE_DUMP();
 
     char *argv[] = {dump};
     ck_assert_err_none(do_create_cmd(1, argv));

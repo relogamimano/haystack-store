@@ -74,7 +74,8 @@ LDFLAGS += '-L$(SRC_DIR)'
 
 LDLIBS += -lcheck -lm -lrt -pthread -lsubunit -lcrypto
 
-OBJS = $(SRC_DIR)/imgfs_tools.o $(SRC_DIR)/imgfscmd_functions.o $(SRC_DIR)/util.o $(SRC_DIR)/imgfs_list.o
+OBJS = $(SRC_DIR)/imgfs_list.o $(SRC_DIR)/imgfs_tools.o $(SRC_DIR)/imgfscmd_functions.o
+OBJS += $(SRC_DIR)/util.o $(SRC_DIR)/error.o
 
 OBJS += $(SRC_DIR)/imgfs_create.o $(SRC_DIR)/imgfs_delete.o
 
@@ -83,7 +84,7 @@ unit-test-imgfsstruct.o: unit-test-imgfsstruct.c $(SRC_DIR)/imgfs.h
 
 # ======================================================================
 unit-test-imgfstools.o: unit-test-imgfstools.c $(SRC_DIR)/imgfs.h
-unit-test-imgfstools: unit-test-imgfstools.o $(SRC_DIR)/imgfs_tools.o
+unit-test-imgfstools: unit-test-imgfstools.o $(SRC_DIR)/imgfs_tools.o $(SRC_DIR)/error.o
 
 # ======================================================================
 unit-test-imgfslist.o: unit-test-imgfslist.c $(SRC_DIR)/imgfs.h
