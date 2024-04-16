@@ -21,7 +21,7 @@ END_TEST
 START_TEST(do_delete_image_not_found)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("empty"));
@@ -39,7 +39,7 @@ END_TEST
 START_TEST(do_delete_read_only)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("test02"));
@@ -57,7 +57,7 @@ END_TEST
 START_TEST(do_delete_correct)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("test02"));
@@ -85,7 +85,7 @@ END_TEST
 START_TEST(do_delete_bad_open_mode)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
 
     struct imgfs_file file;
     DUPLICATE_FILE(dump, IMGFS("test02"));
@@ -123,7 +123,7 @@ END_TEST
 START_TEST(do_delete_cmd_not_enough_arguments)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
     DUPLICATE_FILE(dump, IMGFS("empty"));
 
     char *argv[] = {dump};
@@ -137,7 +137,7 @@ END_TEST
 START_TEST(do_delete_cmd_image_not_found)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
     DUPLICATE_FILE(dump, IMGFS("empty"));
 
     char *argv[] = {dump, "pic1"};
@@ -151,7 +151,7 @@ END_TEST
 START_TEST(do_delete_cmd_correct)
 {
     start_test_print;
-    DECLARE_DUMP();
+    DECLARE_DUMP;
     DUPLICATE_FILE(dump, IMGFS("test02"));
 
     char *argv[] = {dump, "pic1"};
