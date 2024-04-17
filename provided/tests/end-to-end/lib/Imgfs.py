@@ -11,6 +11,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robot.libraries.OperatingSystem import OperatingSystem
 from robot.libraries.Telnet import Telnet
 from Errors import Errors
+from Utils import Utils
 import datetime
 
 
@@ -57,6 +58,8 @@ class Imgfs:
         self.server_executable = server_exec_path
         self.data_dir = data_dir
         self.server_process = None
+
+        self.utils = Utils(exec_path)
 
         # register self as listener to log the commands that were executed
         self.ROBOT_LIBRARY_LISTENER = self
@@ -140,7 +143,7 @@ class Imgfs:
 
         :param expected_string The expected output. If None, no check is done
 
-        :param expected_file   The file containing the expected output. If None, no check is done
+        :param expected_file   The file containing the expected output. If None, no check is done. The sequence VIPS in the filename will be replace by the version of VIPS.
 
         :param expected_regexp  A regexp that should match the output. The regex may not match the whole output, use  "^$".
         If None, no check is done
@@ -161,7 +164,7 @@ class Imgfs:
             self.builtin.should_be_equal(res.stdout.strip(), expected_string.strip())
 
         if expected_file:
-            file = open(expected_file).read()
+            file = open(self.utils.translate_reference_filename(expected_file)).read()
             self.builtin.should_be_equal(res.stdout.strip(), file.strip())
 
         if expected_regexp:
@@ -224,7 +227,7 @@ class Imgfs:
             self.builtin.should_be_equal(out, f"HTTP/1.1 500 Internal Server Error\r\nError: {self.errors.get_error_message(expected_err)}\r\nContent-Length: 0\r\n\r\n".encode('utf-8'))
             
         if expected_file:
-            file = open(expected_file, mode="rb").read()
+            file = open(self.utils.translate_reference_filename(expected_file), mode="rb").read()
             self.builtin.log(file.hex())
             self.builtin.log(out.hex())
             self.builtin.should_be_equal(out, file)
