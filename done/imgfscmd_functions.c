@@ -32,8 +32,9 @@ int help(int useless _unused, char** useless_too _unused)
      * **********************************************************************
      */
 
-    TO_BE_IMPLEMENTED();
-    return NOT_IMPLEMENTED;
+    //TO_BE_IMPLEMENTED();
+    //return NOT_IMPLEMENTED;
+    return 4; 
 }
 
 /**********************************************************************
@@ -73,7 +74,6 @@ int do_list_cmd(int argc, char** argv)
 int do_create_cmd(int argc, char** argv)
 {
 
-    puts("Create");
     /* **********************************************************************
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************

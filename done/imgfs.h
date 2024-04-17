@@ -50,20 +50,20 @@ extern "C" {
  */
 
 struct imgfs_header {
-    char name[MAX_IMGFS_NAME]; 
+    char name[MAX_IMGFS_NAME+1]; 
     unsigned int version; 
     unsigned int nb_files; 
-    unsigned int max_files; 
-    unsigned short int resized_res[2*(NB_RES-1)]; 
+    unsigned const int max_files; 
+    unsigned const short int resized_res[ORIG_RES*(NB_RES-1)]; 
     unsigned int unused_32; 
     unsigned long int unused_64; 
 }; 
 
 struct img_metadata{
-    char img_id[MAX_IMG_ID];
+    char img_id[MAX_IMG_ID+1];
     unsigned char SHA[SHA256_DIGEST_LENGTH]; 
     unsigned int orig_res[2]; 
-    unsigned int size[NB_RES];
+    unsigned const int size[NB_RES]; //garder un oeil dessus 
     unsigned long int offset[NB_RES]; 
     unsigned short int is_valid; 
     unsigned short int unused_16; 
