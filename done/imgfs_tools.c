@@ -72,8 +72,8 @@ int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* 
 
 
     M_REQUIRE_NON_NULL(file); 
-    M_REQUIRE_NON_NULL(file_name); // ? 
-    M_REQUIRE_NON_NULL(opening_mode); // ?
+    M_REQUIRE_NON_NULL(file_name); // oui 
+    M_REQUIRE_NON_NULL(opening_mode); // oui 
 
 
     FILE* fp = fopen(file_name, opening_mode); 
