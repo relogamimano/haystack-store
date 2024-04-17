@@ -67,10 +67,12 @@ ORIGINAL: %" PRIu32 " x %" PRIu32 "\n",
     printf("*****************************************\n");
 }
 
-
+//TODO : are the parameters labels correctly chosen ? (e.g. with "file" we can access its file member with "file->file", which is a bit confusing) 
 int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* file){
 
-    M_REQUIRE_NON_NULL(file); 
+    M_REQUIRE_NON_NULL(file_name); 
+    M_REQUIRE_NON_NULL(opening_mode);
+    M_REQUIRE_NON_NULL(file);
 
     FILE* fp = fopen(file_name, opening_mode); 
     if (fp == NULL) {
@@ -81,15 +83,15 @@ int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* 
         fclose(fp); 
         return ERR_IO; 
     }
-
-    file->metadata = (struct img_metadata*)malloc(sizeof(struct img_metadata) * file->header.nb_files);
+    file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), file->header.max_files);
     if (file->metadata == NULL) {
         fclose(fp);
         return ERR_OUT_OF_MEMORY;
     }
 
-    if (fread(file->metadata, sizeof(struct img_metadata), file->header.nb_files, fp) != file->header.nb_files) {
+    if (fread(file->metadata, sizeof(struct img_metadata), file->header.max_files, fp) != file->header.max_files) {
         free(file->metadata);
+        file->metadata = NULL;
         fclose(fp);
         return ERR_IO;
     }
@@ -100,12 +102,8 @@ int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* 
 }
 
 void do_close(struct imgfs_file* file) {
-    if (file == NULL) {
-        return;
-    }
 
     free(file->metadata);
-
     file->metadata = NULL;
 }
 
