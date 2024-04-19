@@ -20,8 +20,10 @@ EXECS=$(foreach name,$(TARGETS),unit-test-$(name))
 
 .PHONY: unit-tests all $(TARGETS) execs
 
-# first creates all exec, **then** launch them
-all: execs unit-tests
+## removed undesired feature
+## # first creates all exec, **then** launch them
+## all: execs unit-tests
+all: unit-tests
 
 unit-tests: $(TARGETS)
 
@@ -29,47 +31,58 @@ execs: $(EXECS)
 
 # some target shortcuts : compile & run the tests
 imgfsstruct: unit-test-imgfsstruct
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfstools: unit-test-imgfstools
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfslist: unit-test-imgfslist
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfscreate: unit-test-imgfscreate
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfsdelete: unit-test-imgfsdelete
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfsdedup: unit-test-imgfsdedup
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfscontent: unit-test-imgfscontent
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfsresolutions: unit-test-imgfsresolutions
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfsinsert: unit-test-imgfsinsert
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 imgfsread: unit-test-imgfsread
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # some target shortcuts : compile & run the tests
 http: unit-test-http
-	./$^
+	./$^ && echo "==== " $< " SUCCEEDED =====" || { echo "==== " $< " FAILED ====="; false; }
+	@printf '\n'
 
 # ======================================================================
 DATA_DIR ?= ../data/

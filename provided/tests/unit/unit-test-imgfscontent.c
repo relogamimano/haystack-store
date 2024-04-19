@@ -143,8 +143,13 @@ START_TEST(lazily_resize_valid)
     long file_size;
     struct imgfs_file file;
 
-    reference = fopen(DATA_DIR "/papillon256_256-" VIPS_VERSION ".jpg", "rb");
-    ck_assert_ptr_nonnull(reference);
+#define FILENAME DATA_DIR "papillon256_256-" VIPS_VERSION ".jpg"
+    reference = fopen(FILENAME, "rb");
+    ck_assert_msg(reference != NULL, "cannot open file \"" FILENAME "\"\n"
+                  "Please check your VIPS version with:\n  vips --version\n"
+                  "(on the command line) and maybe let us know (not guaranted.\n"
+                  "  Currently supported versions are:\n   - 8.12.1 (on Ubuntu 22.04; incl. EPFL VMs); and\n"
+                  "   - 8.15.1 (latest stable version when the project was developped).\n)");
 
     ck_assert_int_eq(fread(reference_buffer, 1, SMALL_RES_SIZE_A, reference), SMALL_RES_SIZE_A);
 
