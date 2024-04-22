@@ -104,20 +104,20 @@ int do_open(const char* imgfs_filename, const char* open_mode, struct imgfs_file
     return ERR_NONE; 
 }
 
-void do_close(struct imgfs_file* file) {
+void do_close(struct imgfs_file* imgfs_file) {
 
-    if (file == NULL) {
+    if (imgfs_file == NULL) {
        return;
     }
 
-    if (file->metadata != NULL) {
-        free(file->metadata);
-        file->metadata == NULL;
+    if (imgfs_file->metadata != NULL) {
+        free(imgfs_file->metadata);
+        imgfs_file->metadata == NULL;
     }
 
-    if(file->file != NULL){
-        free(file->file);
-        file->file == NULL;
+    if(imgfs_file->file != NULL){
+        free(imgfs_file->file);
+        imgfs_file->file == NULL;
     }
 
     
