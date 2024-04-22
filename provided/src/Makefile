@@ -131,10 +131,11 @@ ifndef EXE
 	$(error Missing executable name)
 endif
 	gdb -ex 'set debuginfod enabled off' \
-		-ex 'cd ../provided/tests/unit/' \
-		-ex 'set environment CK_FORK=no' \
-		-ex 'break $(TEST)' -ex 'run' \
-		-ex 'n' '$(PWD)/../provided/tests/unit/unit-test-$(EXE)'
+	    -ex 'cd ../provided/tests/unit/' \
+	    -ex 'set environment CK_FORK=no' \
+	    -ex 'break $(TEST)' -ex 'run'    \
+	    -ex 'n' -ex 'layout src'         \
+	    '$(PWD)/../provided/tests/unit/unit-test-$(EXE)'
 
 define e2e_test
 robot -v srcdir:$(PWD) -v datadir:$(TEST_DIR)/data $(TEST_DIR)/end-to-end/$1 ;
@@ -159,6 +160,7 @@ doc: Doxyfile
 
 REPO := $(shell git config --get remote.origin.url)
 SSH_DIR := $(HOME)/.ssh
+#DOCKER_OPTIONS += --privileged
 DOCKER_OPTIONS += -e REPO=$(REPO) -v $(SSH_DIR):/opt/.ssh $(IMAGE)
 
 .PHONY: feedback feedback-pull feedback-debug feedback-VM-CO feedback-debug-VM-CO clone-ssh clean-fake-ssh
@@ -187,16 +189,9 @@ feedback-debug-VM-CO: clone-ssh feedback-debug clean-fake-ssh
 
 SUBMIT_SCRIPT=../provided/submit.sh
 
-.PHONY: submit1 submit2 submit
+.PHONY: submit1 submit
 
 submit1: $(SUBMIT_SCRIPT)
 	@$(SUBMIT_SCRIPT) 1
 
-submit2: $(SUBMIT_SCRIPT)
-	@$(SUBMIT_SCRIPT) 2
-
-submit3: $(SUBMIT_SCRIPT)
-	@$(SUBMIT_SCRIPT) 3
-
-submit:
-	@printf 'what "make submit"??\nIt'\''s either "make submit1", "make submit2" or "make submit3"...\n'
+submit: submit1

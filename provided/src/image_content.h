@@ -27,7 +27,8 @@ extern "C" {
 int get_resolution(uint32_t *height, uint32_t *width, const char *image_buffer, size_t image_size);
 
 /**
- * @brief Calls the create_resized_img function and updates the metadata on the disk
+ * @brief Resize the image to the given resolution, if it does not already
+ * exists, and updates the metadata on the disk.
  *
  * @param resolution
  * @param imgfs_file The main in-memory structure

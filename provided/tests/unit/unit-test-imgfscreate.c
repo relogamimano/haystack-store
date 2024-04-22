@@ -281,6 +281,7 @@ Suite *imgfs_do_create_test_suite()
     Add_Test(s, do_create_cmd_null_params);
     Add_Test(s, do_create_cmd_invalid_flag);
     Add_Test(s, do_create_cmd_not_enough_flag_params);
+    Add_Test(s, do_create_cmd_no_filename);
     Add_Test(s, do_create_cmd_res_too_big);
     Add_Test(s, do_create_cmd_no_flags);
     Add_Test(s, do_create_cmd_all_flags);

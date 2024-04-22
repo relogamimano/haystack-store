@@ -173,8 +173,8 @@ static const char *const ERR_NAMES[] = {"ERR_FIRST",
                 strcat(buf, __FILE__);                                                                                 \
                 buf[strlen(buf) - 2] = 0; /* skip the trailing '.c' */                                                 \
                                                                                                                        \
-                printf("\033[31m|\033[000m Test %s failed. To run in gdb, use: \033[001mmake dbg TEST=%s "             \
-                       "EXE=%s\033[000m\n",                                                                            \
+                printf("\033[31m|\033[000m Test %s failed. To run in gdb, use: \033[001mmake dbg TEST=%s"              \
+                       TEST_FUNCTION_POSTFIX " EXE=%s\033[000m\n",                                                     \
                        tr_tcname(results[i]), tr_tcname(results[i]), buf + 10);                                        \
             }                                                                                                          \
                                                                                                                        \
