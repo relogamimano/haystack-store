@@ -92,6 +92,23 @@ int do_delete_cmd(int argc, char** argv)
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************
      */
+    if (argc < 2)  {
+        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    }
+
+    const char *files = argv[1]; 
+
+    struct imgfs_file * imgfs_file;
+
+    int create = do_create(files, imgfs_file);
+
+    if (create != ERR_NONE) {
+        return ERR_IO; 
+    }
+
+    do_list(&imgfs_file, STDOUT, NULL); 
+
+    do_close(&imgfs_file);
 
     TO_BE_IMPLEMENTED();
     return NOT_IMPLEMENTED;
