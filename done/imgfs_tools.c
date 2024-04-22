@@ -68,32 +68,32 @@ ORIGINAL: %" PRIu32 " x %" PRIu32 "\n",
 }
 
 //TODO : are the parameters labels correctly chosen ? (e.g. with "file" we can access its file member with "file->file", which is a bit confusing) 
-int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* file){
+int do_open(const char* imgfs_filename, const char* open_mode, struct imgfs_file* imgfs_file){
 
 
-    M_REQUIRE_NON_NULL(file); 
-    M_REQUIRE_NON_NULL(file_name); // oui 
-    M_REQUIRE_NON_NULL(opening_mode); // oui 
+    M_REQUIRE_NON_NULL(imgfs_file); 
+    M_REQUIRE_NON_NULL(imgfs_filename); // oui 
+    M_REQUIRE_NON_NULL(open_mode); // oui 
 
 
-    FILE* fp = fopen(file_name, opening_mode);
+    FILE* fp = fopen(imgfs_filename, open_mode);
     if (fp == NULL) {
         return ERR_IO; 
     }
 
-    if (fread(&(file->header), sizeof(struct imgfs_header), 1, fp) != 1) {
+    if (fread(&(imgfs_file->header), sizeof(struct imgfs_header), 1, fp) != 1) {
         fclose(fp); 
         return ERR_IO; 
     }
-    file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), file->header.max_files);
-    if (file->metadata == NULL) {
+    imgfs_file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), imgfs_file->header.max_files);
+    if (imgfs_file->metadata == NULL) {
         fclose(fp);
         return ERR_OUT_OF_MEMORY;
     }
 
-    if (fread(file->metadata, sizeof(struct img_metadata), file->header.max_files, fp) != file->header.max_files) {
-        free(file->metadata);
-        file->metadata = NULL; 
+    if (fread(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, fp) != imgfs_file->header.max_files) {
+        free(imgfs_file->metadata);
+        imgfs_file->metadata = NULL; 
         fclose(fp);
         return ERR_IO;
     }
@@ -106,11 +106,20 @@ int do_open(const char* file_name, const char* opening_mode, struct imgfs_file* 
 
 void do_close(struct imgfs_file* file) {
 
-    //if (file == NULL) {
-    //    return;
-    //}
+    if (file == NULL) {
+       return;
+    }
 
-    free(file->metadata);
-    file->metadata = NULL;
+    if (file->metadata != NULL) {
+        free(file->metadata);
+        file->metadata == NULL;
+    }
+
+    if(file->file != NULL){
+        free(file->file);
+        file->file == NULL;
+    }
+
+    
 }
 
