@@ -78,20 +78,6 @@ int do_create_cmd(int argc, char** argv)
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************
      */
-
-    TO_BE_IMPLEMENTED();
-    return NOT_IMPLEMENTED;
-}
-
-/**********************************************************************
- * Deletes an image from the imgFS.
- */
-int do_delete_cmd(int argc, char** argv)
-{
-    /* **********************************************************************
-     * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
-     * **********************************************************************
-     */
     if (argc < 2)  {
         return ERR_NOT_ENOUGH_ARGUMENTS; 
     }
@@ -109,6 +95,21 @@ int do_delete_cmd(int argc, char** argv)
     do_list(&imgfs_file, STDOUT, NULL); 
 
     do_close(&imgfs_file);
+
+    TO_BE_IMPLEMENTED();
+    return NOT_IMPLEMENTED;
+}
+
+/**********************************************************************
+ * Deletes an image from the imgFS.
+ */
+int do_delete_cmd(int argc, char** argv)
+{
+    /* **********************************************************************
+     * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
+     * **********************************************************************
+     */
+    
 
     TO_BE_IMPLEMENTED();
     return NOT_IMPLEMENTED;
