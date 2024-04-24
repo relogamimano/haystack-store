@@ -87,7 +87,7 @@ http: unit-test-http
 # ======================================================================
 DATA_DIR ?= ../data/
 SRC_DIR  ?= ../../done
-CFLAGS  += '-I$(SRC_DIR)' -DCS212_TEST -DDATA_DIR='"$(DATA_DIR)"'
+CFLAGS  += '-I$(SRC_DIR)' -DCS202_TEST -DDATA_DIR='"$(DATA_DIR)"'
 LDFLAGS += '-L$(SRC_DIR)'
 
 LDLIBS += -lcheck -lm -lrt -pthread -lsubunit -lcrypto
