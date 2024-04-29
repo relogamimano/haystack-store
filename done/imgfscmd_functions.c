@@ -109,8 +109,32 @@ int do_delete_cmd(int argc, char** argv)
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************
      */
-    
 
-    TO_BE_IMPLEMENTED();
-    return NOT_IMPLEMENTED;
+    if (argc < 3)  {
+        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    }
+
+    const char *files = argv[1];
+    const char *img_id = argv[2];
+
+    if (files == NULL || img_id == NULL) {
+        return ERR_INVALID_ARGUMENT; 
+    }
+
+    if (strlen(img_id) > MAX_IMG_ID) {
+        return ERR_INVALID_IMGID;
+    }
+
+    struct imgfs_file imgfs_file; 
+
+    int open = do_open(files, "rb+", &imgfs_file); 
+
+    if (open != ERR_NONE) {
+        return open; 
+    }
+
+    int delete = do_delete(img_id, &imgfs_file);
+    do_close(&imgfs_file);
+
+    return delete; 
 }

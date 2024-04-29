@@ -106,21 +106,11 @@ int do_open(const char* imgfs_filename, const char* open_mode, struct imgfs_file
 void do_close(struct imgfs_file* imgfs_file) {
 
     if (imgfs_file == NULL) {
-       return;
+        return;
     }
 
-    
+    free(imgfs_file->metadata);
 
-    if(imgfs_file->file != NULL){
-        // fclose(imgfs_file->file);
-        imgfs_file->file = NULL;
-    }
-
-    if (imgfs_file->metadata != NULL) {
-        free(imgfs_file->metadata);
-        imgfs_file->metadata = NULL;
-    }
-
-    
+    imgfs_file->metadata = NULL;
 }
 
