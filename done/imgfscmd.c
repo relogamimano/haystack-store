@@ -52,10 +52,10 @@ int main(int argc, char* argv[])
         for(i = 0; i < NUM_COMMANDS; i++) {
             if (strcmp(argv[0], commands[i].name) == 0) {
                 ret = commands[i].command(argc, argv);
-                if (ret) {
-                    help(argc, argv); 
+                if (ret == ERR_INVALID_ARGUMENT) {
+                    ret = commands[3].command(argc, argv); 
                 }
-                break;
+                break; 
             }
         }
         if (i == NUM_COMMANDS) {
@@ -67,6 +67,7 @@ int main(int argc, char* argv[])
         fprintf(stderr, "ERROR: %s\n", ERR_MSG(ret));
         help(argc, argv);
     }
+
 
     return ret;
 }

@@ -16,9 +16,6 @@ int do_list(const struct imgfs_file* imgfs_file,
     M_REQUIRE_NON_NULL(imgfs_file); 
     //M_REQUIRE_NON_NULL(json); 
 
-    
-    
-
     if (output_mode == STDOUT) {
         print_header(&imgfs_file->header); 
     
