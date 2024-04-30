@@ -29,7 +29,7 @@ command_mapping commands[] = {
 };
 
 #define NUM_COMMANDS (sizeof(commands) / sizeof(commands[0]))
-
+#define HELP_INDEX 3
 
 /*******************************************************************************
  * MAIN
@@ -53,7 +53,7 @@ int main(int argc, char* argv[])
             if (strcmp(argv[0], commands[i].name) == 0) {
                 ret = commands[i].command(argc, argv);
                 if (ret == ERR_INVALID_ARGUMENT) {
-                    ret = commands[3].command(argc, argv); 
+                    ret = commands[HELP_INDEX].command(argc, argv); 
                 }
                 break; 
             }
