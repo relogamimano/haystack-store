@@ -20,21 +20,14 @@ int do_create(const char* imgfs_filename, struct imgfs_file* imgfs_file) {
     M_REQUIRE_NON_NULL(imgfs_filename);
     M_REQUIRE_NON_NULL(imgfs_file);
     struct imgfs_header header = imgfs_file->header;
-    struct img_metadata * metadata = imgfs_file->metadata;
 
-    FILE* outfile = fopen(imgfs_filename,"r");
-    // SHA256(*igfs_filename, strlen(*imgfs_filename), imgfs_file->metadata.SHA)
+    FILE* outfile = fopen(imgfs_filename,"wb");
     if(outfile == NULL) {
         fclose(outfile);
         return ERR_IO;
     }
-    imgfs_file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), header.max_files);
-    if(imgfs_file->metadata == NULL) {
-        fclose(outfile);
-        return ERR_IO;
-    }
     
-    strcpy(imgfs_file->header.name, CAT_TXT);
+    strcpy(header.name, CAT_TXT);
     header.version = 1;
     header.nb_files = 0;
     header.unused_32 = 0;
@@ -45,15 +38,21 @@ int do_create(const char* imgfs_filename, struct imgfs_file* imgfs_file) {
         return ERR_IO;
     }
 
-    if(fwrite(metadata, sizeof(struct img_metadata), header.max_files, outfile) != header.max_files) {
+    imgfs_file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), header.max_files);
+    if(imgfs_file->metadata == NULL) {
         fclose(outfile);
         return ERR_IO;
     }
 
-    // printf("%d item(s) written", 1 + metadata->nb_files);
+    if(fwrite(imgfs_file->metadata, sizeof(struct img_metadata), header.max_files, outfile) != header.max_files) {
+        fclose(outfile);
+        free(imgfs_file->metadata);
+        return ERR_IO;
+    }
 
-    // free(metadata)
-    // metadata = NULL
+    printf("%d item(s) written\n", header.max_files + 1);
+
+    fclose(outfile);
 
     return ERR_NONE;
 }
