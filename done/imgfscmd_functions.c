@@ -40,10 +40,31 @@ int help(int useless _unused, char** useless_too _unused)
      * TODO WEEK 08: WRITE YOUR CODE HERE.
      * **********************************************************************
      */
+    int h = fprintf(stdout,
+        "imgfscmd [COMMAND] [ARGUMENTS]\n"
+        "  help: displays this help.\n"
+        "  list <imgFS_filename>: list imgFS content.\n"
+        "  create <imgFS_filename> [options]: create a new imgFS.\n"
+        "      options are:\n"
+        "          -max_files <MAX_FILES>: maximum number of files.\n"
+        "                                  default value is %u\n"
+        "                                  maximum value is %u\n"
+        "          -thumb_res <X_RES> <Y_RES>: resolution for thumbnail images.\n"
+        "                                  default value is %ux%u\n"
+        "                                  maximum value is %ux%u\n"
+        "         -small_res <X_RES> <Y_RES>: resolution for small images.\n"
+        "                                  default value is %ux%u\n"
+        "                                  maximum value is %ux%u\n"
+        "  delete <imgFS_filename> <imgID>: delete image imgID from imgFS.\n",
+        default_max_files, MAX_FLAG_MAX_FILES,
+        default_thumb_res, default_thumb_res,
+        MAX_THUMB_RES, MAX_THUMB_RES, 
+        default_small_res, default_small_res,
+        MAX_SMALL_RES, MAX_SMALL_RES
+    );
 
-    //TO_BE_IMPLEMENTED();
-    //return NOT_IMPLEMENTED;
-    return 4; 
+    
+    return h < 0 ? ERR_IO : ERR_NONE; 
 }
 
 /**********************************************************************
@@ -156,8 +177,32 @@ int do_delete_cmd(int argc, char** argv)
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************
      */
-    
 
-    TO_BE_IMPLEMENTED();
-    return NOT_IMPLEMENTED;
+    if (argc < 3)  {
+        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    }
+
+    const char *files = argv[1];
+    const char *img_id = argv[2];
+
+    if (files == NULL || img_id == NULL) {
+        return ERR_INVALID_ARGUMENT; 
+    }
+
+    if (strlen(img_id) > MAX_IMG_ID) {
+        return ERR_INVALID_IMGID;
+    }
+
+    struct imgfs_file imgfs_file; 
+
+    int open = do_open(files, "rb+", &imgfs_file); 
+
+    if (open != ERR_NONE) {
+        return open; 
+    }
+
+    int delete = do_delete(img_id, &imgfs_file);
+    do_close(&imgfs_file);
+
+    return delete; 
 }
