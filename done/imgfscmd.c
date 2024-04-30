@@ -55,7 +55,7 @@ int main(int argc, char* argv[])
                 break;
             }
         }
-        if (i == 4) {
+        if (i == NUM_COMMANDS) {
             ret = ERR_INVALID_COMMAND;
         }
     }
