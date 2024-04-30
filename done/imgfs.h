@@ -51,22 +51,22 @@ extern "C" {
 
 struct imgfs_header {
     char name[MAX_IMGFS_NAME+1]; 
-    unsigned int version; 
-    unsigned int nb_files; 
-    unsigned const int max_files; 
-    unsigned const short int resized_res[ORIG_RES*(NB_RES-1)]; 
-    unsigned int unused_32; 
-    unsigned long int unused_64; 
+    uint32_t version; 
+    uint32_t nb_files; 
+    uint32_t max_files; 
+    uint16_t resized_res[ORIG_RES*(NB_RES-1)]; 
+    uint32_t unused_32; 
+    uint64_t unused_64; 
 }; 
 
 struct img_metadata{
     char img_id[MAX_IMG_ID+1];
     unsigned char SHA[SHA256_DIGEST_LENGTH]; 
-    unsigned int orig_res[2]; 
-    unsigned const int size[NB_RES]; //garder un oeil dessus 
-    unsigned long int offset[NB_RES]; 
-    unsigned short int is_valid; 
-    unsigned short int unused_16; 
+    uint32_t orig_res[2]; 
+    const uint32_t size[NB_RES]; //garder un oeil dessus 
+    uint64_t offset[NB_RES]; 
+    uint16_t is_valid; 
+    uint16_t unused_16; 
 };
 
 struct imgfs_file {
