@@ -231,3 +231,29 @@ static void read_file(void *buffer, const char *filename, size_t size)
 
     fclose(file);
 }
+
+static void read_file_and_size(void **buffer, const char *filename, size_t* size)
+{
+    FILE *file = fopen(filename, "r");
+    ck_assert_ptr_nonnull(file);
+
+    ck_assert_int_eq(fseek(file, 0, SEEK_END), 0);
+    *size = (size_t)ftell(file);
+    rewind(file);
+
+    *buffer = calloc(*size, 1);
+    ck_assert_ptr_nonnull(buffer);
+
+    ck_assert_uint_eq(fread(*buffer, 1, *size, file), *size);
+
+    fclose(file);
+}
+static size_t locate_sos(char *buffer, size_t size) {
+    for (size_t i = 0; i < size - 1; ++i) {
+        if (buffer[i] == (char)0xff && buffer[i+1] == (char)0xda) {
+            return i;
+        }
+    }
+
+    return 0;
+}

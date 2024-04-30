@@ -52,11 +52,14 @@ int main(int argc, char* argv[])
         for(i = 0; i < NUM_COMMANDS; i++) {
             if (strcmp(argv[0], commands[i].name) == 0) {
                 ret = commands[i].command(argc, argv);
+                if (ret) {
+                    help(argc, argv); 
+                }
                 break;
             }
         }
         if (i == NUM_COMMANDS) {
-            ret = ERR_INVALID_COMMAND;
+            ret = commands[NUM_COMMANDS].command(argc, argv);
         }
     }
 

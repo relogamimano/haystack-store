@@ -111,11 +111,17 @@ START_TEST(do_create_cmd_not_enough_flag_params)
     char *argv1[] = {dump1, "-max_files"};
     ck_assert_err(do_create_cmd(2, argv1), ERR_NOT_ENOUGH_ARGUMENTS);
 
-    char *argv2[] = {dump2, "-thumb_res", "32"};
+    char *argv2[] = {dump2, "-thumb_res",};
     ck_assert_err(do_create_cmd(2, argv2), ERR_NOT_ENOUGH_ARGUMENTS);
 
-    char *argv3[] = {dump2, "-small_res", "32"};
+    char *argv3[] = {dump2, "-small_res",};
     ck_assert_err(do_create_cmd(2, argv3), ERR_NOT_ENOUGH_ARGUMENTS);
+
+    char *argv4[] = {dump2, "-thumb_res", "32"};
+    ck_assert_err(do_create_cmd(3, argv4), ERR_NOT_ENOUGH_ARGUMENTS);
+
+    char *argv5[] = {dump2, "-small_res", "32"};
+    ck_assert_err(do_create_cmd(3, argv5), ERR_NOT_ENOUGH_ARGUMENTS);
 
     end_test_print;
 }

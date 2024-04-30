@@ -6,6 +6,7 @@ CC = clang
 TARGETS := imgfsstruct imgfstools imgfslist
 TARGETS += imgfscreate imgfsdelete
 TARGETS += imgfsdedup imgfscontent
+TARGETS += imgfsresolutions imgfsinsert imgfsread
 
 CFLAGS += -g
 
@@ -98,6 +99,8 @@ OBJS += $(SRC_DIR)/util.o $(SRC_DIR)/error.o
 OBJS += $(SRC_DIR)/imgfs_create.o $(SRC_DIR)/imgfs_delete.o
 
 OBJS += $(SRC_DIR)/image_dedup.o $(SRC_DIR)/image_content.o
+
+OBJS += $(SRC_DIR)/imgfs_insert.o $(SRC_DIR)/imgfs_read.o
 
 # ======================================================================
 unit-test-imgfsstruct.o: unit-test-imgfsstruct.c $(SRC_DIR)/imgfs.h

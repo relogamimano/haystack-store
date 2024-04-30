@@ -143,6 +143,7 @@ endef
 end2end-tests: $(TARGETS)
 	$(call e2e_test,week07.robot)
 	$(call e2e_test,week08.robot)
+	$(call e2e_test,week10.robot)
 
 check: end2end-tests unit-tests
 

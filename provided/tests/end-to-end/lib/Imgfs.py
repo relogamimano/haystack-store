@@ -12,8 +12,6 @@ from robot.libraries.OperatingSystem import OperatingSystem
 from robot.libraries.Telnet import Telnet
 from Errors import Errors
 from Utils import Utils
-import datetime
-
 
 def log_crash_if_any(res):
     # Check if a crash occurred, and if so, print the stacktrace
@@ -132,6 +130,7 @@ class Imgfs:
         expected_string=None,
         expected_file=None,
         expected_regexp=None,
+        output_file=None,
     ):
         """
         Run the u6fs executable and gives the arguments as parameters.
@@ -169,6 +168,9 @@ class Imgfs:
 
         if expected_regexp:
             self.builtin.should_match_regexp(res.stdout, expected_regexp)
+
+        if output_file:
+            open(output_file, 'wb').write(res.stdout)
 
         return res
 
@@ -213,7 +215,7 @@ class Imgfs:
         self.errors.compare_exit_code(res, "ERR_NONE")
         self.server_process = None
 
-    def imgfs_curl(self, *args, expected_err=None, expected_file=None):
+    def imgfs_curl(self, *args, expected_err=None, expected_file=None, output_file=None):
         self.process.process_should_be_running(self.server_process)
         
         self.logged_commands.append(shlex.join(["curl", "-i", *args]))
@@ -232,3 +234,5 @@ class Imgfs:
             self.builtin.log(out.hex())
             self.builtin.should_be_equal(out, file)
 
+        if output_file:
+            open(output_file, 'wb').write(out)
