@@ -28,7 +28,7 @@ int do_create(const char* imgfs_filename, struct imgfs_file* imgfs_file) {
     }
     
     strcpy(header.name, CAT_TXT);
-    header.version = 1;
+    header.version = 0; // start at version 0 !
     header.nb_files = 0;
     header.unused_32 = 0;
     header.unused_64 = 0;
