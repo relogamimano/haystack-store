@@ -70,35 +70,38 @@ ORIGINAL: %" PRIu32 " x %" PRIu32 "\n",
 //TODO : are the parameters labels correctly chosen ? (e.g. with "file" we can access its file member with "file->file", which is a bit confusing) 
 int do_open(const char* imgfs_filename, const char* open_mode, struct imgfs_file* imgfs_file){
 
-
     M_REQUIRE_NON_NULL(imgfs_file); 
     M_REQUIRE_NON_NULL(imgfs_filename); // oui 
     M_REQUIRE_NON_NULL(open_mode); // oui 
 
 
-    FILE* fp = fopen(imgfs_filename, open_mode);
-    if (fp == NULL) {
+    //FILE* fp = fopen(imgfs_filename, open_mode);
+    imgfs_file->file = fopen(imgfs_filename, open_mode); 
+    if (imgfs_file->file == NULL) {
         return ERR_IO; 
     }
-
-    if (fread(&(imgfs_file->header), sizeof(struct imgfs_header), 1, fp) != 1) {
-        fclose(fp); 
+                                                                    //imgfs_file->file = fp 
+    if (fread(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file) != 1) {
+        fclose(imgfs_file->file); 
         return ERR_IO; 
     }
+    
     imgfs_file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), imgfs_file->header.max_files);
     if (imgfs_file->metadata == NULL) {
-        fclose(fp);
+        // imgfs_file->file = fp 
+        fclose(imgfs_file->file);
         return ERR_OUT_OF_MEMORY;
     }
-
-    if (fread(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, fp) != imgfs_file->header.max_files) {
+                                                                                //imgfs_file->file = fp 
+    if (fread(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file) != imgfs_file->header.max_files) {
         free(imgfs_file->metadata);
         imgfs_file->metadata = NULL; 
-        fclose(fp);
+        //imgfs_file->file = fp 
+        fclose(imgfs_file->file);
         return ERR_IO;
     }
 
-    fclose(fp); 
+    //fclose(fp); 
 
     return ERR_NONE; 
 }
@@ -112,7 +115,7 @@ void do_close(struct imgfs_file* imgfs_file) {
     
 
     if(imgfs_file->file != NULL){
-        // fclose(imgfs_file->file);
+        fclose(imgfs_file->file);
         imgfs_file->file = NULL;
     }
 

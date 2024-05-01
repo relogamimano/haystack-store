@@ -7,6 +7,8 @@ int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
         return ERR_INVALID_ARGUMENT;  
     }
 
+    if (imgfs_file->file == NULL) { puts("debug trace imgfs_file-> file is NULL");}
+
     int found = 0;
     for (unsigned int i = 0; i < imgfs_file->header.max_files; i++) {
         if (strcmp(imgfs_file->metadata[i].img_id, img_id) == 0 && imgfs_file->metadata[i].is_valid == NON_EMPTY) {

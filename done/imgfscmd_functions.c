@@ -155,6 +155,10 @@ int do_create_cmd(int argc, char** argv)
         }
     }
     
+    
+    // do_close(&imgfs_file);
+    //return do_create(argv[ARG_FILE_NAME_INDEX], &imgfs_file);
+
     struct imgfs_header header = {
         .max_files = max_files,
         .resized_res = { thumb_width, thumb_height, small_width, small_height }
@@ -163,9 +167,15 @@ int do_create_cmd(int argc, char** argv)
     struct imgfs_file imgfs_file = {
         .header = header
     };
-    
-    // do_close(&imgfs_file);
-    return do_create(argv[ARG_FILE_NAME_INDEX], &imgfs_file);
+
+    int result = do_create(argv[ARG_FILE_NAME_INDEX], &imgfs_file);
+
+    if (imgfs_file.metadata) {
+        free(imgfs_file.metadata);
+        imgfs_file.metadata = NULL;
+    }
+
+    return result;
 }
 
 /**********************************************************************
