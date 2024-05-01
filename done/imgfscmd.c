@@ -13,6 +13,7 @@
 
 #include <stdlib.h>
 #include <string.h>
+#include <vips/vips.h>
 
 typedef int (*command)(int argc, char* argv[]);
 
@@ -36,7 +37,9 @@ command_mapping commands[] = {
  */
 int main(int argc, char* argv[])
 {
-    VIPS_INIT(argv[0]);
+    if(VIPS_INIT(argv[0])) {
+        vips_error_exit("unable to start VIPS");
+    }
     int ret = 0;
 
     if (argc < 2) {
@@ -66,6 +69,7 @@ int main(int argc, char* argv[])
         help(argc, argv);
     }
 
+    
     vips_shutdown();
     return ret;
 }

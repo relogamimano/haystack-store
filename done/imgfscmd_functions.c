@@ -83,7 +83,7 @@ int do_list_cmd(int argc, char** argv)
 
     const char *files = argv[ARG_FILE_NAME_INDEX]; 
 
-    struct imgfs_file imgfs_file;
+    struct imgfs_file imgfs_file = {0};
 
     int open = do_open(files, "rb", &imgfs_file);
 

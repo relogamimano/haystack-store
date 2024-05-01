@@ -94,10 +94,7 @@ int do_open(const char* imgfs_filename, const char* open_mode, struct imgfs_file
     }
                                                                                 //imgfs_file->file = fp 
     if (fread(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file) != imgfs_file->header.max_files) {
-        free(imgfs_file->metadata);
-        imgfs_file->metadata = NULL; 
-        //imgfs_file->file = fp 
-        fclose(imgfs_file->file);
+        do_close(imgfs_file);
         return ERR_IO;
     }
 
@@ -112,8 +109,6 @@ void do_close(struct imgfs_file* imgfs_file) {
        return;
     }
 
-    
-
     if(imgfs_file->file != NULL){
         fclose(imgfs_file->file);
         imgfs_file->file = NULL;
@@ -122,6 +117,7 @@ void do_close(struct imgfs_file* imgfs_file) {
     if (imgfs_file->metadata != NULL) {
         free(imgfs_file->metadata);
         imgfs_file->metadata = NULL;
+
     }
 
     
