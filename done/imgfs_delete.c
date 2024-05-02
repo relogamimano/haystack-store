@@ -4,6 +4,8 @@
 
 int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
 
+    //puts("yo"); 
+
     M_REQUIRE_NON_NULL(imgfs_file); 
     M_REQUIRE_NON_NULL(img_id); 
 
@@ -26,22 +28,35 @@ int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
     imgfs_file->header.nb_files--;  
 
     // faire peutetre des ERR_IO et inverser version++ et files-- si ces 4 b ails fonctionnent pas 
-    fseek(imgfs_file->file, sizeof(struct imgfs_header), SEEK_SET);
-    fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file); // on est d'accord 3)
+    //fseek(imgfs_file->file, sizeof(struct imgfs_header), SEEK_SET);
+    //fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file); // on est d'accord 3)
     // non rewind(imgfs_file->file);
-    fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file); // ça on est d'accord 2)
+    //fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file); // ça on est d'accord 2)
     // 
 
 
-    fseek(imgfs_file->file, 0, SEEK_SET); 
+    //fseek(imgfs_file->file, 0, SEEK_SET); 
 
 
     if (fseek(imgfs_file->file, 0, SEEK_SET)) {
-        imgfs_file->header.version--, 
+        imgfs_file->header.version--; 
+        imgfs_file->header.nb_files++; 
+        puts("seek"); 
+        return ERR_IO; 
+    }
+
+    if (fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file) != 1) {
+        imgfs_file->header.version--; 
         imgfs_file->header.nb_files++; 
         return ERR_IO; 
     }
 
+    if (fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file) != imgfs_file->header.max_files) {
+        puts("write meta"); 
+        imgfs_file->header.version--;
+        imgfs_file->header.nb_files++; 
+        return ERR_IO; 
+    }
 
     return ERR_NONE;
 }
