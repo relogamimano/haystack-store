@@ -14,49 +14,48 @@
  *
  * @param imgfs_filename Path to the imgFS file
  * @param imgfs_file In memory structure with header and metadata.
- * @return ERR_NONE on success, ERR_IO on failure
  */
 int do_create(const char* imgfs_filename, struct imgfs_file* imgfs_file) {
-    // Check for null pointers
+    // Check for NULL pointers
     M_REQUIRE_NON_NULL(imgfs_filename);
     M_REQUIRE_NON_NULL(imgfs_file);
-
-    // Open the file for writing
+    
+    // Open the file for writing in binary mode
     FILE* outfile = fopen(imgfs_filename,"wb");
     if(outfile == NULL) {
         fclose(outfile);
-        return ERR_IO; // Return ERR_IO if file opening fails
+        return ERR_IO;
     }
     
-    // Initialize header values
-    strcpy(imgfs_file->header.name, CAT_TXT); // Set the name
-    imgfs_file->header.version = 0; // Start at version 0
-    imgfs_file->header.nb_files = 0; // No files initially
-    imgfs_file->header.unused_32 = 0; // Unused
-    imgfs_file->header.unused_64 = 0; // Unused
+    // Set the header values
+    strcpy(imgfs_file->header.name, CAT_TXT);
+    imgfs_file->header.version = 0; // start at version 0 !
+    imgfs_file->header.nb_files = 0;
+    imgfs_file->header.unused_32 = 0;
+    imgfs_file->header.unused_64 = 0;
+    imgfs_file->file = outfile;
     
-    // Write header to file
+    // Write the header to the file
     if(fwrite(&imgfs_file->header, sizeof(struct imgfs_header), 1, outfile) != 1) {
         fclose(outfile);
-        return ERR_IO; // Return ERR_IO if header writing fails
+        return ERR_IO;
     }
 
-    // Allocate memory for metadata
+    // Allocate memory for the metadata array
     imgfs_file->metadata = (struct img_metadata*)calloc(sizeof(struct img_metadata), imgfs_file->header.max_files);
     if(imgfs_file->metadata == NULL) {
         fclose(outfile);
-        return ERR_IO; // Return ERR_IO if memory allocation fails
+        return ERR_IO;
     }
 
-    // Write empty metadata array to file
+    // Write the metadata array to the file
     if(fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, outfile) != imgfs_file->header.max_files) {
         fclose(outfile);
         free(imgfs_file->metadata);
-        return ERR_IO; // Return ERR_IO if metadata writing fails
+        return ERR_IO;
     }
 
-    // Success message
     printf("%d item(s) written\n", imgfs_file->header.max_files + 1);
-
-    return ERR_NONE; // Return ERR_NONE indicating success
+    
+    return ERR_NONE;
 }
