@@ -25,11 +25,11 @@ static const uint16_t MAX_SMALL_RES = 512;
 
 static const uint32_t MAX_FLAG_MAX_FILES = 4294967295;
 
-#define ARG_FILE_PATH_INDEX 0
+#define FILE_PATH_INDEX 0
 #define ARG_ID_INDEX 1
 #define MIN_NB_ARG 8
-#define NB_MAX_FILE_FLAG_QUANTITY 1
-#define WIDTH_AND_HEIGHT_FLAG_QUANTITY 2
+#define MAX_FILE_ARGC 1
+#define DIMENSION_ARGC 2
 
 /**********************************************************************
  * Displays some explanations.
@@ -113,8 +113,7 @@ int do_create_cmd(int argc, char** argv)
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************
      */
-    // imgfscmd create tests/data/ -max_files
-    //            0        1         2          ==3
+    
     M_REQUIRE_NON_NULL(argv);
     
 
@@ -131,7 +130,7 @@ int do_create_cmd(int argc, char** argv)
 
     for(int i = 0; i < argc; i++) {
         if(!strcmp(argv[i], "-max_files")) {
-            if (argc - i <= NB_MAX_FILE_FLAG_QUANTITY) {
+            if (argc - i <= MAX_FILE_ARGC) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             uint32_t uint32_arg = atouint32(argv[++i]);
@@ -140,7 +139,7 @@ int do_create_cmd(int argc, char** argv)
             }
             max_files = uint32_arg;
         } else if (!strcmp(argv[i], "-thumb_res")) {
-            if (argc - i <= WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
+            if (argc - i <= DIMENSION_ARGC) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             thumb_width = atouint16(argv[++i]);
@@ -150,7 +149,7 @@ int do_create_cmd(int argc, char** argv)
                 return ERR_RESOLUTIONS;
             }
         } else if (!strcmp(argv[i], "-small_res")) {
-            if (argc - i <= WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
+            if (argc - i <= DIMENSION_ARGC) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             small_width = atouint16(argv[++i]);
@@ -163,14 +162,7 @@ int do_create_cmd(int argc, char** argv)
         }
     }
     
-    
-    // do_close(&imgfs_file);
-    //return do_create(argv[ARG_FILE_NAME_INDEX], &imgfs_file);
 
-    // struct imgfs_header header = {
-    //     .max_files = max_files,
-    //     .resized_res = { thumb_width, thumb_height, small_width, small_height }
-    // };
 
     struct imgfs_file imgfs_file = {
         .header.max_files = max_files,
@@ -199,7 +191,7 @@ int do_delete_cmd(int argc, char** argv)
         return ERR_NOT_ENOUGH_ARGUMENTS; 
     }
 
-    const char *files = argv[ARG_FILE_PATH_INDEX];
+    const char *files = argv[FILE_PATH_INDEX];
     const char *img_id = argv[ARG_ID_INDEX];
     
     if (files == NULL || img_id == NULL) {
