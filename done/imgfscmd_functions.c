@@ -79,9 +79,10 @@ int do_list_cmd(int argc, char** argv)
     M_REQUIRE_NON_NULL(argv);
     
 
-    if (argc > 1)  {
+    // nn 
+    if (argc > 1)  { 
         return ERR_INVALID_COMMAND; 
-    } else if( argc < 1) {
+    } else if( argc < 1) { 
         return ERR_INVALID_ARGUMENT;
     }
 
