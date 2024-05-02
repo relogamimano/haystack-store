@@ -26,13 +26,12 @@ int do_name_and_content_dedup(struct imgfs_file* imgfs_file, uint32_t index) {
 
     // if index > header-maxfiles return err image not found 
 
-    if (index > imgfs_file->header.max_files) {
-        return ERR_IMAGE_NOT_FOUND; 
-    }
+    // if (index > imgfs_file->header.nb_files) {
+    //     return ERR_INVALID_ARGUMENT; 
+    // }
 
-    if (imgfs_file == NULL || index >= imgfs_file->header.max_files || 
-        imgfs_file->metadata[index].is_valid == EMPTY) {
-        return ERR_INVALID_ARGUMENT; 
+    if (index > imgfs_file->header.nb_files || imgfs_file->metadata[index].is_valid == EMPTY) {
+        return ERR_IMAGE_NOT_FOUND; 
     }
 
     struct img_metadata *indexed_image = &imgfs_file->metadata[index];
@@ -42,7 +41,7 @@ int do_name_and_content_dedup(struct imgfs_file* imgfs_file, uint32_t index) {
     for (uint32_t i = 0; i < imgfs_file->header.max_files; i++) {
         if (i != index && imgfs_file->metadata[i].is_valid == NON_EMPTY) {
             struct img_metadata *other_image = &imgfs_file->metadata[i];
-            if (strcmp(indexed_image->img_id, other_image->img_id) == 0) {
+            if (!strcmp(indexed_image->img_id, other_image->img_id)) {
                 return ERR_DUPLICATE_ID;
             }
             if (memcmp(indexed_image->SHA, other_image->SHA, SHA256_DIGEST_LENGTH) == 0) {
