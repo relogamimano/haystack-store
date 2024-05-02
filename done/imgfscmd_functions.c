@@ -25,8 +25,8 @@ static const uint16_t MAX_SMALL_RES = 512;
 
 static const uint32_t MAX_FLAG_MAX_FILES = 4294967295;
 
-#define ARG_FILE_NAME_INDEX 1
-#define OPTIONAL_ARG_START_INDEX 2
+#define ARG_FILE_PATH_INDEX 0
+#define ARG_ID_INDEX 1
 #define MIN_NB_ARG 8
 #define NB_MAX_FILE_FLAG_QUANTITY 1
 #define WIDTH_AND_HEIGHT_FLAG_QUANTITY 2
@@ -76,12 +76,16 @@ int do_list_cmd(int argc, char** argv)
      * TODO WEEK 07: WRITE YOUR CODE HERE.
      * **********************************************************************
      */
+    M_REQUIRE_NON_NULL(argv);
+    
 
-    if (argc < OPTIONAL_ARG_START_INDEX)  {
-        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    if (argc > 1)  {
+        return ERR_INVALID_COMMAND; 
+    } else if( argc < 1) {
+        return ERR_INVALID_ARGUMENT;
     }
 
-    const char *files = argv[ARG_FILE_NAME_INDEX]; 
+    const char *files = argv[0]; 
 
     struct imgfs_file imgfs_file = {0};
 
@@ -111,18 +115,23 @@ int do_create_cmd(int argc, char** argv)
      */
     // imgfscmd create tests/data/ -max_files
     //            0        1         2          ==3
-    if (argc < OPTIONAL_ARG_START_INDEX - 1)  {
-        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    M_REQUIRE_NON_NULL(argv);
+    
+
+    if( argc < 1) {
+        return ERR_NOT_ENOUGH_ARGUMENTS;
     }
     
     uint32_t max_files = default_max_files;
     uint16_t thumb_width = default_thumb_res, thumb_height = default_thumb_res;
     uint16_t small_width = default_small_res, small_height = default_small_res;
 
+    const char * filename = argv[0];
+    argc--; argv++;
 
-    for(int i = OPTIONAL_ARG_START_INDEX; i < argc; i++) {
+    for(int i = 0; i < argc; i++) {
         if(!strcmp(argv[i], "-max_files")) {
-            if (argc - 1 - i < NB_MAX_FILE_FLAG_QUANTITY) {
+            if (argc - i <= NB_MAX_FILE_FLAG_QUANTITY) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             uint32_t uint32_arg = atouint32(argv[++i]);
@@ -131,23 +140,22 @@ int do_create_cmd(int argc, char** argv)
             }
             max_files = uint32_arg;
         } else if (!strcmp(argv[i], "-thumb_res")) {
-            if (argc - 1 - i < WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
+            if (argc - i <= WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             thumb_width = atouint16(argv[++i]);
             thumb_height = atouint16(argv[++i]);
-            uint16_t thumb_res = thumb_height * thumb_width;
-            if(thumb_res > MAX_THUMB_RES * MAX_THUMB_RES || thumb_res <= 0) {
+            
+            if(thumb_width > MAX_THUMB_RES || thumb_height > MAX_THUMB_RES || thumb_width <= 0 || thumb_height <= 0) {
                 return ERR_RESOLUTIONS;
             }
         } else if (!strcmp(argv[i], "-small_res")) {
-            if (argc - 1 - i < WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
+            if (argc - i <= WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             small_width = atouint16(argv[++i]);
             small_height = atouint16(argv[++i]);
-            uint16_t small_res = small_height * small_width;
-            if(small_res > MAX_SMALL_RES * MAX_SMALL_RES || small_res <= 0) {
+            if(small_width > MAX_SMALL_RES || small_height > MAX_SMALL_RES || small_width <= 0 || small_height <= 0) {
                 return ERR_RESOLUTIONS;
             }
         } else {
@@ -159,21 +167,19 @@ int do_create_cmd(int argc, char** argv)
     // do_close(&imgfs_file);
     //return do_create(argv[ARG_FILE_NAME_INDEX], &imgfs_file);
 
-    struct imgfs_header header = {
-        .max_files = max_files,
-        .resized_res = { thumb_width, thumb_height, small_width, small_height }
-    };
+    // struct imgfs_header header = {
+    //     .max_files = max_files,
+    //     .resized_res = { thumb_width, thumb_height, small_width, small_height }
+    // };
 
     struct imgfs_file imgfs_file = {
-        .header = header
+        .header.max_files = max_files,
+        .header.resized_res = { thumb_width, thumb_height, small_width, small_height }
     };
 
-    int result = do_create(argv[ARG_FILE_NAME_INDEX], &imgfs_file);
+    int result = do_create(filename, &imgfs_file);
 
-    if (imgfs_file.metadata) {
-        free(imgfs_file.metadata);
-        imgfs_file.metadata = NULL;
-    }
+    do_close(&imgfs_file);
 
     return result;
 }
@@ -187,14 +193,15 @@ int do_delete_cmd(int argc, char** argv)
      * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
      * **********************************************************************
      */
+    M_REQUIRE_NON_NULL(argv);
 
-    if (argc < 3)  {
+    if (argc < 2)  {
         return ERR_NOT_ENOUGH_ARGUMENTS; 
     }
 
-    const char *files = argv[1];
-    const char *img_id = argv[2];
-
+    const char *files = argv[ARG_FILE_PATH_INDEX];
+    const char *img_id = argv[ARG_ID_INDEX];
+    
     if (files == NULL || img_id == NULL) {
         return ERR_INVALID_ARGUMENT; 
     }

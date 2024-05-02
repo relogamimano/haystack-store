@@ -55,6 +55,7 @@ int main(int argc, char* argv[])
         int i;
         for(i = 0; i < NUM_COMMANDS; i++) {
             if (strcmp(argv[0], commands[i].name) == 0) {
+                argc--; argv++; // skips command call name
                 ret = commands[i].command(argc, argv);
                 break; 
             }
