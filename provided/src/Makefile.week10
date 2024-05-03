@@ -33,7 +33,7 @@ CFLAGS += -Wcast-align
 
 ## may require: export ASAN_OPTIONS=allocator_may_return_null=1
 #               export ASAN_OPTIONS=verify_asan_link_order=0
-# different -fsanitize options are available, including -fmemory
+# different -fsanitize options are available, including -fsanitize=memory
 CPPFLAGS += -fsanitize=address
 LDFLAGS  += -fsanitize=address
 LDLIBS   += -fsanitize=address
@@ -161,14 +161,18 @@ doc: Doxyfile
 
 REPO := $(shell git config --get remote.origin.url)
 SSH_DIR := $(HOME)/.ssh
+
+PLATFORM := linux/amd64 # Set your platform; currently supported: linux/amd64, linux/arm/v7, linux/arm64; use x86_64 for ARM hosts
+PLATFORM_FLAG = --platform=$(PLATFORM)
+
 #DOCKER_OPTIONS += --privileged
-DOCKER_OPTIONS += -e REPO=$(REPO) -v $(SSH_DIR):/opt/.ssh $(IMAGE)
+DOCKER_OPTIONS += -e REPO=$(REPO) -v $(SSH_DIR):/opt/.ssh $(PLATFORM_FLAG) $(IMAGE)
 
 .PHONY: feedback feedback-pull feedback-debug feedback-VM-CO feedback-debug-VM-CO clone-ssh clean-fake-ssh
 
 feedback-pull:
 	@echo Will use $(REPO) inside container
-	@docker pull $(IMAGE)
+	@docker pull $(PLATFORM_FLAG) $(IMAGE)
 feedback: feedback-pull
 	@docker run -it --rm $(DOCKER_OPTIONS)
 feedback-debug: feedback-pull
