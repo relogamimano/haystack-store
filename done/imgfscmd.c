@@ -15,9 +15,6 @@
 #include <string.h>
 #include <vips/vips.h>
 
-// m 
-
-
 typedef int (*command)(int argc, char* argv[]);
 
 typedef struct {
@@ -43,17 +40,15 @@ int main(int argc, char* argv[])
     if(VIPS_INIT(argv[0])) {
         vips_error_exit("unable to start VIPS");
     }
+
+    // return code 
     int ret = 0;
 
     if (argc < 2) {
         ret = ERR_NOT_ENOUGH_ARGUMENTS;
     } else {
-        /* **********************************************************************
-         * TODO WEEK 07: THIS PART SHALL BE EXTENDED.
-         * **********************************************************************
-         */
 
-        argc--; argv++; // skips command call name
+        argc--; argv++; // skips program name 
 
         int i;
         for(i = 0; i < NUM_COMMANDS; i++) {

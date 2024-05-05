@@ -2,15 +2,23 @@
 #include "error.h"
 #include <string.h>
 
+/**
+ * @brief Deletes an image in the imgfs_file by deferencing it 
+ *
+ * @param img_id the id of the image 
+ * @param imgfs_file the imgfs_file we delete the image from 
+ * @return Some error code. 0 if no error.
+ */
+
 int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
 
-    //puts("yo"); 
+    // checks 
 
     M_REQUIRE_NON_NULL(imgfs_file); 
     M_REQUIRE_NON_NULL(img_id); 
 
-    if (imgfs_file->file == NULL) { puts("debug trace imgfs_file-> file is NULL");}
 
+    // look for the image we want to delete, deference it if found 
     int found = 0;
     for (uint32_t i = 0; i < imgfs_file->header.max_files; i++) {
         if (strcmp(imgfs_file->metadata[i].img_id, img_id) == 0 && imgfs_file->metadata[i].is_valid == NON_EMPTY) {
@@ -20,42 +28,25 @@ int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
         }
     }
 
+    // throw an error if the image is not found 
     if (!found) {
         return ERR_IMAGE_NOT_FOUND; 
     }
 
-    imgfs_file->header.version++; 
-    imgfs_file->header.nb_files--;  
-
-    // faire peutetre des ERR_IO et inverser version++ et files-- si ces 4 b ails fonctionnent pas 
-    //fseek(imgfs_file->file, sizeof(struct imgfs_header), SEEK_SET);
-    //fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file); // on est d'accord 3)
-    // non rewind(imgfs_file->file);
-    //fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file); // ça on est d'accord 2)
-    // 
-
-
-    //fseek(imgfs_file->file, 0, SEEK_SET); 
-
-
-    if (fseek(imgfs_file->file, 0, SEEK_SET)) {
-        imgfs_file->header.version--; 
-        imgfs_file->header.nb_files++; 
-        puts("seek"); 
+    // update metadata 
+    if (fseek(imgfs_file->file, sizeof(struct imgfs_header), SEEK_SET) != 0 ||
+        fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file) != imgfs_file->header.max_files) {
         return ERR_IO; 
     }
 
-    if (fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file) != 1) {
+    // if the metadata update was successful, update header 
+    imgfs_file->header.version++;
+    imgfs_file->header.nb_files--;
+    if (fseek(imgfs_file->file, 0, SEEK_SET) != 0 ||
+        fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file) != 1) {
         imgfs_file->header.version--; 
         imgfs_file->header.nb_files++; 
-        return ERR_IO; 
-    }
-
-    if (fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file) != imgfs_file->header.max_files) {
-        puts("write meta"); 
-        imgfs_file->header.version--;
-        imgfs_file->header.nb_files++; 
-        return ERR_IO; 
+        return ERR_IO;
     }
 
     return ERR_NONE;

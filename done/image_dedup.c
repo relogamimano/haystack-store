@@ -1,42 +1,28 @@
-/**
- * @file image_dedup.h
- * @brief Image deduplication.
- *
- * All functions to avoid duplication of images content in a imgFS.
- *
- * @author Mia Primorac
- */
-
-#include "imgfs.h"  // for struct imgfs_file
-
-#include <stdio.h>  // for FILE
-#include <stdint.h> // for uint32_t
+#include "imgfs.h"  
+#include <stdio.h> 
+#include <stdint.h>
 #include <error.h>
 #include <string.h>
 
-
-
-
 int do_name_and_content_dedup(struct imgfs_file* imgfs_file, uint32_t index) {
 
-    // require non null ingfsfile et imgfs_file->metadata 
-
+    // requireed checks 
     M_REQUIRE_NON_NULL(imgfs_file); 
     M_REQUIRE_NON_NULL(imgfs_file->metadata);  
 
-    // if index > header-maxfiles return err image not found 
-
-    // if (index > imgfs_file->header.nb_files) {
-    //     return ERR_INVALID_ARGUMENT; 
-    // }
 
     if (index > imgfs_file->header.nb_files || imgfs_file->metadata[index].is_valid == EMPTY) {
         return ERR_IMAGE_NOT_FOUND; 
     }
 
+
+
     struct img_metadata *indexed_image = &imgfs_file->metadata[index];
 
     int found_dup = 0; 
+
+    // go through the images and copy the one with the same SHA as the requested image
+    // also throw an error if it finds a duplicate 
 
     for (uint32_t i = 0; i < imgfs_file->header.max_files; i++) {
         if (i != index && imgfs_file->metadata[i].is_valid == NON_EMPTY) {

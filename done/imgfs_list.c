@@ -1,26 +1,23 @@
-#include "error.h" /* Not needed in this very file,
-                    * but we provide it here, as it is required by
-                    * all the functions of this lib.
-                    */
+#include "error.h" 
 #include "imgfs.h"      
-
-#include "util.h" // for TO_BE_IMPLEMENTED() 
+#include "util.h" 
 
 
 
 
 int do_list(const struct imgfs_file* imgfs_file, 
-        enum do_list_mode output_mode, char** json) { //m 
+        enum do_list_mode output_mode, char** json) {
 
-    
+
     M_REQUIRE_NON_NULL(imgfs_file); 
+    // at this point of the project json is unused 
     //M_REQUIRE_NON_NULL(json); 
 
     if (output_mode == STDOUT) {
         print_header(&imgfs_file->header); 
     
 
-        int nbfiles = imgfs_file->header.nb_files; 
+        uint32_t nbfiles = imgfs_file->header.nb_files; 
 
 
         if (nbfiles == 0) {
@@ -36,7 +33,7 @@ int do_list(const struct imgfs_file* imgfs_file,
             if(!is_image_found){
                 printf("<< empty imgFS >>\n");
             }
-        }//TODO : can nb_files != 0 and no metadata elements valid ?
+        }
     } else if (output_mode == JSON) {
         TO_BE_IMPLEMENTED(); 
     }

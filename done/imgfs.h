@@ -53,8 +53,8 @@ struct imgfs_header {
     char name[MAX_IMGFS_NAME+1]; 
     uint32_t version; 
     uint32_t nb_files; 
-    uint32_t max_files; 
-    uint16_t resized_res[ORIG_RES*(NB_RES-1)]; 
+    const uint32_t max_files; 
+    const uint16_t resized_res[ORIG_RES*(NB_RES-1)]; 
     uint32_t unused_32; 
     uint64_t unused_64; 
 }; 

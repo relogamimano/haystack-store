@@ -14,10 +14,6 @@
 #include <string.h>
 #include <inttypes.h>
 
-
-// matteo
-
-
 // default values
 static const uint32_t default_max_files = 128;
 static const uint16_t default_thumb_res =  64;
@@ -29,22 +25,18 @@ static const uint16_t MAX_SMALL_RES = 512;
 
 static const uint32_t MAX_FLAG_MAX_FILES = 4294967295;
 
-#define FILE_PATH_INDEX 0
+#define ARG_FILE_PATH_INDEX 0
 #define ARG_ID_INDEX 1
 #define MIN_NB_ARG 8
-#define MAX_FILE_ARGC 1
-#define DIMENSION_ARGC 2
+#define NB_MAX_FILE_FLAG_QUANTITY 1
+#define WIDTH_AND_HEIGHT_FLAG_QUANTITY 2
 
 /**********************************************************************
  * Displays some explanations.
  ********************************************************************** */
-int help(int useless _unused, char** useless_too _unused)
+int help(int useless _unused, char** useless_too _unused) //m
 {
-    /* **********************************************************************
-     * TODO WEEK 08: WRITE YOUR CODE HERE.
-     * **********************************************************************
-     */
-    int h = fprintf(stdout,
+    int h = printf(
         "imgfscmd [COMMAND] [ARGUMENTS]\n"
         "  help: displays this help.\n"
         "  list <imgFS_filename>: list imgFS content.\n"
@@ -76,14 +68,8 @@ int help(int useless _unused, char** useless_too _unused)
  ********************************************************************** */
 int do_list_cmd(int argc, char** argv)
 {
-    /* **********************************************************************
-     * TODO WEEK 07: WRITE YOUR CODE HERE.
-     * **********************************************************************
-     */
     M_REQUIRE_NON_NULL(argv);
     
-
-    // nn 
     if (argc > 1)  { 
         return ERR_INVALID_COMMAND; 
     } else if( argc < 1) { 
@@ -113,15 +99,8 @@ int do_list_cmd(int argc, char** argv)
 ********************************************************************** */
 int do_create_cmd(int argc, char** argv)
 {
-
-    /* **********************************************************************
-     * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
-     * **********************************************************************
-     */
-    
     M_REQUIRE_NON_NULL(argv);
     
-
     if( argc < 1) {
         return ERR_NOT_ENOUGH_ARGUMENTS;
     }
@@ -135,7 +114,7 @@ int do_create_cmd(int argc, char** argv)
 
     for(int i = 0; i < argc; i++) {
         if(!strcmp(argv[i], "-max_files")) {
-            if (argc - i <= MAX_FILE_ARGC) {
+            if (argc - i <= NB_MAX_FILE_FLAG_QUANTITY) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             uint32_t uint32_arg = atouint32(argv[++i]);
@@ -144,7 +123,7 @@ int do_create_cmd(int argc, char** argv)
             }
             max_files = uint32_arg;
         } else if (!strcmp(argv[i], "-thumb_res")) {
-            if (argc - i <= DIMENSION_ARGC) {
+            if (argc - i <= WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             thumb_width = atouint16(argv[++i]);
@@ -154,7 +133,7 @@ int do_create_cmd(int argc, char** argv)
                 return ERR_RESOLUTIONS;
             }
         } else if (!strcmp(argv[i], "-small_res")) {
-            if (argc - i <= DIMENSION_ARGC) {
+            if (argc - i <= WIDTH_AND_HEIGHT_FLAG_QUANTITY) {
                 return ERR_NOT_ENOUGH_ARGUMENTS;
             }
             small_width = atouint16(argv[++i]);
@@ -166,8 +145,6 @@ int do_create_cmd(int argc, char** argv)
             return ERR_INVALID_ARGUMENT;
         }
     }
-    
-
 
     struct imgfs_file imgfs_file = {
         .header.max_files = max_files,
@@ -186,17 +163,13 @@ int do_create_cmd(int argc, char** argv)
  */
 int do_delete_cmd(int argc, char** argv)
 {
-    /* **********************************************************************
-     * TODO WEEK 08: WRITE YOUR CODE HERE (and change the return if needed).
-     * **********************************************************************
-     */
     M_REQUIRE_NON_NULL(argv);
 
     if (argc < 2)  {
         return ERR_NOT_ENOUGH_ARGUMENTS; 
     }
 
-    const char *files = argv[FILE_PATH_INDEX];
+    const char *files = argv[ARG_FILE_PATH_INDEX];
     const char *img_id = argv[ARG_ID_INDEX];
     
     if (files == NULL || img_id == NULL) {

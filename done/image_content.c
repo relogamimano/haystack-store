@@ -2,93 +2,85 @@
 #include "util.h"
 #include <vips/vips.h>
 
-//m 
-
-
 
 int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
-    
+
+    // required checks 
     M_REQUIRE_NON_NULL(imgfs_file);
-    
-    // Check if resolution is within bounds
-    if (resolution != ORIG_RES && (resolution >= NB_RES || resolution < 0)) {
+
+    if (resolution != ORIG_RES && (resolution < 0 || resolution >= NB_RES)) {
         return ERR_RESOLUTIONS;
     }
 
-    // Check if index is within bounds
     if (index >= imgfs_file->header.nb_files) {
         return ERR_INVALID_IMGID;
     }
 
-    struct img_metadata * metadata = &imgfs_file->metadata[index];
+    struct img_metadata *metadata = &imgfs_file->metadata[index];
 
-    // Do not resize if resolution is ORIG_RES
-    if (metadata->is_valid == EMPTY || resolution == ORIG_RES || metadata->size[resolution] > 0) {
-        return ERR_NONE;
+    // if the requested image already exists in the corresponding resolution, do nothing 
+    if (metadata->is_valid != NON_EMPTY || resolution == ORIG_RES || metadata->size[resolution] > 0) {
+        return ERR_NONE; 
     }
-        
-    uint32_t orig_size = metadata->size[ORIG_RES];
-    uint64_t orig_offset = metadata->offset[ORIG_RES];
 
-    // create a new variant of the specified image, in the specified resolution
-        
-    void * buf = malloc(orig_size);
-    // Read image content from file into the buffer
-    if(!buf) {
-        free(buf);
+    // create a buffer 
+    size_t orig_size = metadata->size[ORIG_RES];
+    uint64_t orig_offset = metadata->offset[ORIG_RES];
+    void *buf = malloc(orig_size);
+    if (!buf) {
         return ERR_OUT_OF_MEMORY;
     }
-    if (fseek(imgfs_file->file, (long)orig_offset, SEEK_SET)
-    || fread(buf, orig_size, 1, imgfs_file->file) != 1) {
+
+    if (fseek(imgfs_file->file, orig_offset, SEEK_SET) ||
+        fread(buf, orig_size, 1, imgfs_file->file) != 1) {
         free(buf);
         return ERR_IO;
     }
 
-    // Load the original image
-    VipsImage * orig_image = NULL;
+    // load the image in the buffer 
+    VipsImage *orig_image = NULL;
     if (vips_jpegload_buffer(buf, orig_size, &orig_image, NULL)) {
         free(buf);
         return ERR_IMGLIB;
     }
 
-    // Resize the image
-    VipsImage * resized_image = NULL;
-    if (vips_thumbnail_image(orig_image, &resized_image, 
-        imgfs_file->header.resized_res[resolution * ORIG_RES], NULL)) {
+    // do vips stuff to resize the image
+    VipsImage *resized_image = NULL;
+    int r = imgfs_file->header.resized_res[resolution * 2];
+    if (vips_thumbnail_image(orig_image, &resized_image, r, NULL)) {
         g_object_unref(orig_image);
         free(buf);
         return ERR_IMGLIB;
     }
     g_object_unref(orig_image);
 
-    // Save the resized image to buffer
-    void * resized_buf = NULL;
-    size_t resized_img_size = 0;
-    if (vips_jpegsave_buffer(resized_image, &resized_buf, &resized_img_size, NULL)) {
+
+    // save the new resized image in a new buffer  
+    void *resized_buf = NULL;
+    size_t resized_size = 0;
+    if (vips_jpegsave_buffer(resized_image, &resized_buf, &resized_size, NULL)) {
         g_object_unref(resized_image);
         free(buf);
         return ERR_IMGLIB;
     }
     g_object_unref(resized_image);
     free(buf);
-    
-    
-    // Write resized image content to file;
-    if (fseek(imgfs_file->file, 0, SEEK_END) ||
-        fwrite(resized_buf, resized_img_size, 1, imgfs_file->file) != 1) {
+
+    // save the resized image 
+
+    if (fseek(imgfs_file->file, 0, SEEK_END) != 0 ||
+        fwrite(resized_buf, 1, resized_size, imgfs_file->file) != resized_size) {
         g_free(resized_buf);
         return ERR_IO;
     }
     g_free(resized_buf);
 
-    // Update metadata
-    metadata->size[resolution] = (uint32_t)resized_img_size;
-    metadata->offset[resolution] = (uint64_t)(ftell(imgfs_file->file) - resized_img_size);
-    
-    if(fseek(imgfs_file->file, sizeof(struct imgfs_header) + index * sizeof(struct img_metadata), SEEK_SET) ||
-        fwrite(metadata, sizeof(struct img_metadata), 1, imgfs_file->file) != 1) {
-        return ERR_IO; 
-    }
+
+    // update metadata accordingly 
+    metadata->offset[resolution] = ftell(imgfs_file->file) - resized_size;
+    metadata->size[resolution] = resized_size;
+    fseek(imgfs_file->file, sizeof(struct imgfs_header) + index * sizeof(struct img_metadata), SEEK_SET);
+    fwrite(metadata, sizeof(struct img_metadata), 1, imgfs_file->file);
 
     return ERR_NONE;
 }
