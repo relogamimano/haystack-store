@@ -3,9 +3,12 @@
 #include <string.h>
 
 int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
+
+    // utiliser m_require non null a la place 
     if (imgfs_file == NULL || img_id == NULL) {
         return ERR_INVALID_ARGUMENT;  
     }
+    // 
 
     if (imgfs_file->file == NULL) { puts("debug trace imgfs_file-> file is NULL");}
 
@@ -27,9 +30,16 @@ int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
 
     // 
     fseek(imgfs_file->file, sizeof(struct imgfs_header), SEEK_SET);
-    if(fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file) != imgfs_file->header.max_files) { return ERR_IO;}
+    fwrite(imgfs_file->metadata, sizeof(struct img_metadata), imgfs_file->header.max_files, imgfs_file->file);
     rewind(imgfs_file->file);
     fwrite(&(imgfs_file->header), sizeof(struct imgfs_header), 1, imgfs_file->file);
+    // 
+
+    if (fseek(imgfs_file->file, 0, SEEK_SET)) {
+        imgfs_file->header.version--, 
+        imgfs_file->header.nb_files++; 
+        return ERR_IO; 
+    }
 
     return ERR_NONE;
 }
