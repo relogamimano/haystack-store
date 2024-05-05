@@ -24,10 +24,11 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
     }
 
     // create a buffer 
-    size_t orig_size = metadata->size[ORIG_RES];
+    uint32_t orig_size = metadata->size[ORIG_RES];
     uint64_t orig_offset = metadata->offset[ORIG_RES];
     void *buf = malloc(orig_size);
     if (!buf) {
+        free(buf); 
         return ERR_OUT_OF_MEMORY;
     }
 
@@ -56,7 +57,7 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
 
 
     // save the new resized image in a new buffer  
-    void *resized_buf = NULL;
+    void * resized_buf = NULL;
     size_t resized_size = 0;
     if (vips_jpegsave_buffer(resized_image, &resized_buf, &resized_size, NULL)) {
         g_object_unref(resized_image);
@@ -69,7 +70,7 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
     // save the resized image 
 
     if (fseek(imgfs_file->file, 0, SEEK_END) != 0 ||
-        fwrite(resized_buf, 1, resized_size, imgfs_file->file) != resized_size) {
+        fwrite(resized_buf,resized_size, 1, imgfs_file->file) != 1) {
         g_free(resized_buf);
         return ERR_IO;
     }
