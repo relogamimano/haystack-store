@@ -10,7 +10,7 @@
 
 
 int do_list(const struct imgfs_file* imgfs_file, 
-        enum do_list_mode output_mode, char** json) {
+        enum do_list_mode output_mode, char** json) { //m 
 
     
     M_REQUIRE_NON_NULL(imgfs_file); 

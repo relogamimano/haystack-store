@@ -2,7 +2,7 @@
 #include "error.h"
 #include <string.h>
 
-int do_delete(const char* img_id, struct imgfs_file* imgfs_file) {
+int do_delete(const char* img_id, struct imgfs_file* imgfs_file) { //m 
 
     // utiliser m_require non null a la place 
     if (imgfs_file == NULL || img_id == NULL) {

@@ -15,6 +15,9 @@
 #include <string.h>
 #include <vips/vips.h>
 
+// m 
+
+
 typedef int (*command)(int argc, char* argv[]);
 
 typedef struct {

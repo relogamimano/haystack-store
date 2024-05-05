@@ -14,6 +14,10 @@
 #include <string.h>
 #include <inttypes.h>
 
+
+// matteo
+
+
 // default values
 static const uint32_t default_max_files = 128;
 static const uint16_t default_thumb_res =  64;

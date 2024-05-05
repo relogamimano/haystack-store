@@ -17,7 +17,7 @@
 
 
 
-int do_name_and_content_dedup(struct imgfs_file* imgfs_file, uint32_t index) {
+int do_name_and_content_dedup(struct imgfs_file* imgfs_file, uint32_t index) { //m 
 
     // require non null ingfsfile et imgfs_file->metadata 
 

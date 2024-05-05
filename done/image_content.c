@@ -2,6 +2,10 @@
 #include "util.h"
 #include <vips/vips.h>
 
+//m 
+
+
+
 int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
     
     M_REQUIRE_NON_NULL(imgfs_file);

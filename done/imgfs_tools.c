@@ -103,7 +103,7 @@ int do_open(const char* imgfs_filename, const char* open_mode, struct imgfs_file
     return ERR_NONE; 
 }
 
-void do_close(struct imgfs_file* imgfs_file) {
+void do_close(struct imgfs_file* imgfs_file) { // m 
 
     if (imgfs_file == NULL) {
        return;
