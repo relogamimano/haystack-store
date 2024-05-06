@@ -86,3 +86,26 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
 
     return ERR_NONE;
 }
+
+// Provided method from week 10
+int get_resolution(uint32_t *height, uint32_t *width,
+                   const char *image_buffer, size_t image_size)
+{
+    M_REQUIRE_NON_NULL(height);
+    M_REQUIRE_NON_NULL(width);
+    M_REQUIRE_NON_NULL(image_buffer);
+
+    VipsImage* original = NULL;
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wcast-qual"
+    const int err = vips_jpegload_buffer((void*) image_buffer, image_size,
+                                         &original, NULL);
+#pragma GCC diagnostic pop
+    if (err != ERR_NONE) return ERR_IMGLIB;
+    
+    *height = (uint32_t) vips_image_get_height(original);
+    *width  = (uint32_t) vips_image_get_width (original);
+    
+    g_object_unref(VIPS_OBJECT(original));
+    return ERR_NONE;
+}
