@@ -149,6 +149,7 @@ START_TEST(do_insert_duplicate)
 
     // Checks that the metadata and headers are persisted
     ck_assert_err_none(do_open(dump, "rb+", &file));
+    md = NULL;
     for (uint32_t i = 0; i < file.header.max_files; ++i) {
         if (strcmp(file.metadata[i].img_id, "pic3") == 0) {
             md = &file.metadata[i];
@@ -223,6 +224,7 @@ START_TEST(do_insert_valid)
 
     // Checks that the metadata and headers are persisted
     ck_assert_err_none(do_open(dump, "rb+", &file));
+    md = NULL;
     for (uint32_t i = 0; i < file.header.max_files; ++i) {
         if (strcmp(file.metadata[i].img_id, "pic3") == 0) {
             md = &file.metadata[i];

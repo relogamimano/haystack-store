@@ -157,7 +157,7 @@ clean::
 dump-clean:
 	-$(RM) $(DATA_DIR)/dump*
 
-dist-clean: clean
+dist-clean: clean dump-clean
 	-$(RM) $(foreach T,$(TARGETS),unit-test-$(T))
 
 

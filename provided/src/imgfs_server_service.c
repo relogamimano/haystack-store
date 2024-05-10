@@ -1,4 +1,4 @@
-/* 
+/*
  * @file imgfs_server_services.c
  * @brief ImgFS server part, bridge between HTTP server layer and ImgFS library
  *
