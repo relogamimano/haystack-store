@@ -76,8 +76,8 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
     g_free(resized_buf);
 
     // Update metadata
-    metadata->size[resolution] = (uint32_t)resized_img_size;
-    metadata->offset[resolution] = (uint64_t)(ftell(imgfs_file->file) - resized_img_size);
+    metadata->size[resolution] = (uint32_t)resized_size;
+    metadata->offset[resolution] = (uint64_t)(ftell(imgfs_file->file) - resized_size);
     
     if(fseek(imgfs_file->file, sizeof(struct imgfs_header) + index * sizeof(struct img_metadata), SEEK_SET) ||
         fwrite(metadata, sizeof(struct img_metadata), 1, imgfs_file->file) != 1) {
@@ -87,7 +87,7 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
     return ERR_NONE;
 }
 
-// Provided method from week 10
+// Prov ded method from week 10
 int get_resolution(uint32_t *height, uint32_t *width,
                    const char *image_buffer, size_t image_size)
 {
@@ -104,7 +104,7 @@ int get_resolution(uint32_t *height, uint32_t *width,
     if (err != ERR_NONE) return ERR_IMGLIB;
     
     *height = (uint32_t) vips_image_get_height(original);
-    *width  = (uint32_t) vips_image_get_width (original);
+    *width  = (uint32_t) vips_image_get_width(original);
     
     g_object_unref(VIPS_OBJECT(original));
     return ERR_NONE;

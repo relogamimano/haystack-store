@@ -40,6 +40,9 @@
 #define ORIG_RES  2
 #define NB_RES    3
 
+#define WIDTH_I 0
+#define HEIGHT_I 1
+
 #ifdef __cplusplus
 extern "C" {
 #endif
@@ -194,6 +197,12 @@ int do_insert(const char* image_buffer, size_t image_size,
  * @return Some error code. 0 if no error.
  */
 int do_gbcollect(const char* imgfs_path, const char* imgfs_tmp_bkp_path);
+
+static void create_name(const char* img_id, int resolution, char** new_name);
+
+static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+
+static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
 
 #ifdef __cplusplus
 }
