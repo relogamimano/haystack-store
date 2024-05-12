@@ -38,7 +38,9 @@ CPPFLAGS += -fsanitize=address
 LDFLAGS  += -fsanitize=address
 LDLIBS   += -fsanitize=address
 
-CFLAGS   += -DWEEK=12
+#ifdef CS212_STAFF
+CPPFLAGS += -DCS212_STAFF -DWEEK=14
+#endif
 
 ifdef DEBUG
 # add the debug flag, may need to comment this line when doing make feedback

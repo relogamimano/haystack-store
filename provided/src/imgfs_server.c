@@ -1,4 +1,4 @@
-/* 
+/*
  * @file imgfs_server.c
  * @brief ImgFS server part, main
  *
