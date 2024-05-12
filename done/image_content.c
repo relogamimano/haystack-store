@@ -54,7 +54,6 @@ int lazily_resize(int resolution, struct imgfs_file* imgfs_file, size_t index) {
     }
     g_object_unref(orig_image);
 
-
     // save the new resized image in a new buffer  
     void * resized_buf = NULL;
     size_t resized_size = 0;
