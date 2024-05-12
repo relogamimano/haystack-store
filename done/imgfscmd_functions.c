@@ -62,6 +62,7 @@ int help(int useless _unused, char** useless_too _unused)
         default_small_res, default_small_res,
         MAX_SMALL_RES, MAX_SMALL_RES
     );    
+    
     return h < 0 ? ERR_IO : ERR_NONE; 
 }
 
