@@ -11,7 +11,7 @@
 
 # Note: builds with address sanitizer by default
 
-TEST_DIR = $(PWD)/../provided/tests
+TEST_DIR = $(PWD)/../done/tests
 
 ## You can change the tag to run week07, week08, etc.
 IMAGE := chappeli/cs202-feedback:latest
@@ -22,11 +22,9 @@ CFLAGS += $(shell pkg-config vips --cflags)
 # Add the library to the linker
 LDLIBS += $(shell pkg-config vips --libs)
 
-# Add the library to the linker
-LDLIBS += $(shell pkg-config vips --libs)
 #########################################################################
 # DO NOT EDIT BELOW THIS LINE
-#
+# 
 
 # ======================================================================
 # Compiler and Link
@@ -41,7 +39,7 @@ CFLAGS += -Wcast-align
 
 ## may require: export ASAN_OPTIONS=allocator_may_return_null=1
 #               export ASAN_OPTIONS=verify_asan_link_order=0
-# different -fsanitize options are available, including -fmemory
+# different -fsanitize options are available, including -fsanitize=memory
 CPPFLAGS += -fsanitize=address
 LDFLAGS  += -fsanitize=address
 LDLIBS   += -fsanitize=address
@@ -151,6 +149,7 @@ endef
 end2end-tests: $(TARGETS)
 	$(call e2e_test,week07.robot)
 	$(call e2e_test,week08.robot)
+	$(call e2e_test,week10.robot)
 
 check: end2end-tests unit-tests
 
@@ -168,14 +167,18 @@ doc: Doxyfile
 
 REPO := $(shell git config --get remote.origin.url)
 SSH_DIR := $(HOME)/.ssh
+
+PLATFORM := linux/amd64 # Set your platform; currently supported: linux/amd64, linux/arm/v7, linux/arm64; use x86_64 for ARM hosts
+PLATFORM_FLAG = --platform=$(PLATFORM)
+
 #DOCKER_OPTIONS += --privileged
-DOCKER_OPTIONS += -e REPO=$(REPO) -v $(SSH_DIR):/opt/.ssh $(IMAGE)
+DOCKER_OPTIONS += -e REPO=$(REPO) -v $(SSH_DIR):/opt/.ssh $(PLATFORM_FLAG) $(IMAGE)
 
 .PHONY: feedback feedback-pull feedback-debug feedback-VM-CO feedback-debug-VM-CO clone-ssh clean-fake-ssh
 
 feedback-pull:
 	@echo Will use $(REPO) inside container
-	@docker pull $(IMAGE)
+	@docker pull $(PLATFORM_FLAG) $(IMAGE)
 feedback: feedback-pull
 	@docker run -it --rm $(DOCKER_OPTIONS)
 feedback-debug: feedback-pull
