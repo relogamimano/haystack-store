@@ -23,17 +23,17 @@ int do_insert(const char* image_buffer, size_t image_size, const char* img_id, s
             SHA256((const unsigned char*)image_buffer, image_size, &metadata->SHA);
             strcpy(metadata->img_id, img_id);
             metadata->size[ORIG_RES] = (uint32_t)image_size;
-            //TODO : which is best ? to write the assert as in line 23 or as in lin 42 ?
+           
             int is_res_valid = get_resolution(&metadata->orig_res[HEIGHT_I], &metadata->orig_res[WIDTH_I], image_buffer, image_size);
             if(is_res_valid) { return is_res_valid; }
             
             // TODO :the following code seems a bit strange, is it right ?
-            imgfs_file->header.nb_files++;
+            
             metadata->is_valid = NON_EMPTY;
             
             int is_duplicate = do_name_and_content_dedup(imgfs_file, i);
             if(is_duplicate) {
-                imgfs_file->header.nb_files--;
+                // imgfs_file->header.nb_files--;
                 metadata->is_valid = EMPTY;
                 return is_duplicate;
             }
@@ -59,14 +59,17 @@ int do_insert(const char* image_buffer, size_t image_size, const char* img_id, s
 
             // UPDATING THE HEADER
             imgfs_file->header.version++;
+            imgfs_file->header.nb_files++;
 
             // GOING TO THE HEADER AND UPDATING IT ON THE DISK
             if (fseek(imgfs_file->file, 0, SEEK_SET) ||
                 fwrite(&imgfs_file->header, sizeof(struct imgfs_header), 1, imgfs_file->file) != 1){
                 return ERR_IO;
             }
-            return ERR_NONE;
+            break;
         }   
     }
+    return ERR_NONE;
     //TODO : we are not supposed to reach this point. Nevertheless if we do, it means that the metadata array is full, hence there should not be any room left for other pictures. This scenario is already handled by an if-statment at the begining of the method. Therefore, in theory, all the partitions of outputs will be caught by one of the many assertions. Is it a good practice not to have a defautlt return value. Furthermore, if this point was reached the error triggered by the methode, not returning the type its meant to (void instead of int), would help me see what I have missed.
 }
+
