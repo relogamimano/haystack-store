@@ -226,7 +226,8 @@ class Imgfs:
         out = open("tmp.txt", "rb").read()
 
         if expected_err:
-            self.builtin.should_be_equal(out, f"HTTP/1.1 500 Internal Server Error\r\nError: {self.errors.get_error_message(expected_err)}\r\nContent-Length: 0\r\n\r\n".encode('utf-8'))
+            expected_err_msg = "Error: " + self.errors.get_error_message(expected_err) + '\n'
+            self.builtin.should_be_equal_as_strings(out, f"HTTP/1.1 500 Internal Server Error\r\nContent-Length: {len(expected_err_msg)}\r\n\r\n{expected_err_msg}".encode('utf-8'))
             
         if expected_file:
             file = open(self.utils.translate_reference_filename(expected_file), mode="rb").read()

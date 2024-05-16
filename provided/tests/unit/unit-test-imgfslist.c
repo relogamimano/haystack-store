@@ -53,6 +53,46 @@ START_TEST(do_list_cmd_inexistent_file)
 END_TEST
 
 // ======================================================================
+START_TEST(do_list_json_emtpy)
+{
+    start_test_print;
+
+    char *out = NULL;
+    struct imgfs_file file;
+
+    ck_assert_err_none(do_open(IMGFS("empty"), "rb", &file));
+    ck_assert_err_none(do_list(&file, JSON, &out));
+
+    ck_assert_str_eq(out, "{ \"Images\": [ ] }");
+
+    free(out);
+    do_close(&file);
+
+    end_test_print;
+}
+END_TEST
+
+// ======================================================================
+START_TEST(do_list_json_non_emtpy)
+{
+    start_test_print;
+
+    char *out = NULL;
+    struct imgfs_file file;
+
+    ck_assert_err_none(do_open(IMGFS("test02"), "rb", &file));
+    ck_assert_err_none(do_list(&file, JSON, &out));
+
+    ck_assert_str_eq(out, "{ \"Images\": [ \"pic1\", \"pic2\" ] }");
+
+    free(out);
+    do_close(&file);
+
+    end_test_print;
+}
+END_TEST
+
+// ======================================================================
 Suite *imgfs_structures_test_suite()
 {
     Suite *s = suite_create("Tests for do_list and do_list_cmd implementation");
@@ -63,6 +103,8 @@ Suite *imgfs_structures_test_suite()
     Add_Test(s, do_list_cmd_too_many_params);
     Add_Test(s, do_list_cmd_inexistent_file);
 
+    Add_Test(s, do_list_json_emtpy);
+    Add_Test(s, do_list_json_non_emtpy);
     return s;
 }
 
