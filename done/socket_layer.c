@@ -20,6 +20,14 @@ int tcp_server_init(uint16_t port) {
         return ERR_IO; 
     }
 
+    // test ? 
+    int optval = 1; 
+    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
+        perror("Error setting SO_REUSEADDR");
+        close(sockfd);
+        return ERR_IO;
+    }
+
     struct sockaddr_in address; 
     memset(&address, 0, sizeof(address));
 
@@ -27,7 +35,7 @@ int tcp_server_init(uint16_t port) {
     address.sin_port = htons(port); 
     address.sin_addr.s_addr = INADDR_ANY;
 
-    if (bind(sockfd, &address, sizeof(address)) < 0) {
+    if (bind(sockfd, (struct sockaddr *) &address, sizeof(address)) < 0) {
         perror("Error on binding"); 
         close(sockfd); 
         return ERR_IO; 
@@ -40,7 +48,6 @@ int tcp_server_init(uint16_t port) {
     }
 
     return sockfd; 
-
 
 }
 
