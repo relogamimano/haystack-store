@@ -68,8 +68,63 @@ void http_close(void)
  */
 int http_receive(void)
 {
+    int connect = tcp_accept(passive_socket); 
+    if (connect < 0) {
+        return ERR_IO; 
+    }
+
+    handle_connection(&passive_socket); 
+
+
 }
 
+
+static void* handle_connection(void* arg) {
+
+    int socket = *(int*)arg;  
+    char buf[MAX_HEADER_SIZE]; 
+    int bytes_read = tcp_read(socket, buf, MAX_HEADER_SIZE - 1);
+    
+    int total_bytes_read; 
+    int* result = malloc(sizeof(int)); 
+
+    while (total_bytes_read < MAX_HEADER_SIZE) {
+        bytes_read = tcp_read(socket, buf + total_bytes_read, MAX_HEADER_SIZE - total_bytes_read);
+        if (bytes_read <= 0) {
+            perror("Error on read");
+            close(socket);
+            *result = ERR_IO;
+            return result;
+        }
+
+        total_bytes_read += bytes_read;
+        buf[total_bytes_read] = '\0';
+
+        if (strstr(buf, HTTP_HDR_END_DELIM) != NULL) {
+            break;
+        }
+    }
+
+    if (strstr(buf, HTTP_HDR_END_DELIM) == NULL) {
+        perror("Did not find end delimiter"); 
+        close(socket); 
+        *result = ERR_IO; 
+        return result; 
+    }
+
+    if (strstr(buf, "test: ok") != NULL) {
+        // http reply HTTP_OK
+    } else {
+        // http reply HTTP_BAD_REQUEST
+    }
+
+    close(socket); 
+    result = ERR_NONE; 
+    return result; 
+
+
+
+}
 /*******************************************************************
  * Serve a file content over HTTP
  */

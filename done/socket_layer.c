@@ -20,14 +20,6 @@ int tcp_server_init(uint16_t port) {
         return ERR_IO; 
     }
 
-    // test ? 
-    int optval = 1; 
-    if (setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &optval, sizeof(optval)) < 0) {
-        perror("Error setting SO_REUSEADDR");
-        close(sockfd);
-        return ERR_IO;
-    }
-
     struct sockaddr_in address; 
     memset(&address, 0, sizeof(address));
 
