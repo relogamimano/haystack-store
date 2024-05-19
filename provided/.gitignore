@@ -12,3 +12,4 @@ http-test-server
 *.html
 !index.html
 *.jpg
+tmp.txt
