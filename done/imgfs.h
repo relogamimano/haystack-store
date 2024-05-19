@@ -198,10 +198,35 @@ int do_insert(const char* image_buffer, size_t image_size,
  */
 int do_gbcollect(const char* imgfs_path, const char* imgfs_tmp_bkp_path);
 
+/**
+ * @brief Creates a new name for an image based on its ID and resolution.
+ *
+ * @param img_id The ID of the image.
+ * @param resolution The resolution of the image.
+ * @param new_name A pointer to a char pointer where the new name will be stored.
+ */
 static void create_name(const char* img_id, int resolution, char** new_name);
 
+/**
+ * @brief Writes a disk image to a file.
+ *
+ * @param filename The name of the file to write the image to.
+ * @param image_buffer The buffer containing the image data.
+ * @param image_size The size of the image data in bytes.
+ * @return Returns ERR_NONE if the image was successfully written, or an error
+ * code if there was a problem.
+ */
 static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
 
+/**
+ * @brief Reads a disk image from the specified file path and stores it in the image buffer.
+ * 
+ * @param path The path to the disk image file.
+ * @param image_buffer A pointer to the buffer where the image data will be stored.
+ * @param image_size A pointer to the variable where the size of the image will be stored.
+ * @return An integer representing the result of the operation. Returns ERR_NONE if successful,
+ *         or an error code if an error occurred.
+ */
 static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
 
 #ifdef __cplusplus

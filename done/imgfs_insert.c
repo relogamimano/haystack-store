@@ -27,13 +27,10 @@ int do_insert(const char* image_buffer, size_t image_size, const char* img_id, s
             int is_res_valid = get_resolution(&metadata->orig_res[HEIGHT_I], &metadata->orig_res[WIDTH_I], image_buffer, image_size);
             if(is_res_valid) { return is_res_valid; }
             
-            // TODO :the following code seems a bit strange, is it right ?
-            
             metadata->is_valid = NON_EMPTY;
             
             int is_duplicate = do_name_and_content_dedup(imgfs_file, i);
             if(is_duplicate) {
-                // imgfs_file->header.nb_files--;
                 metadata->is_valid = EMPTY;
                 return is_duplicate;
             }
@@ -70,6 +67,5 @@ int do_insert(const char* image_buffer, size_t image_size, const char* img_id, s
         }   
     }
     return ERR_NONE;
-    //TODO : we are not supposed to reach this point. Nevertheless if we do, it means that the metadata array is full, hence there should not be any room left for other pictures. This scenario is already handled by an if-statment at the begining of the method. Therefore, in theory, all the partitions of outputs will be caught by one of the many assertions. Is it a good practice not to have a defautlt return value. Furthermore, if this point was reached the error triggered by the methode, not returning the type its meant to (void instead of int), would help me see what I have missed.
 }
 

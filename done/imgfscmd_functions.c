@@ -36,7 +36,7 @@ static const uint32_t MAX_FLAG_MAX_FILES = 4294967295;
  ********************************************************************** */
 int help(int useless _unused, char** useless_too _unused)
 {
-    int h = printf(
+    int help = printf(
         "imgfscmd [COMMAND] [ARGUMENTS]\n"
         "  help: displays this help.\n"
         "  list <imgFS_filename>: list imgFS content.\n"
@@ -48,13 +48,13 @@ int help(int useless _unused, char** useless_too _unused)
         "          -thumb_res <X_RES> <Y_RES>: resolution for thumbnail images.\n"
         "                                  default value is %ux%u\n"
         "                                  maximum value is %ux%u\n"
-        "         -small_res <X_RES> <Y_RES>: resolution for small images.\n"
+        "          -small_res <X_RES> <Y_RES>: resolution for small images.\n"
         "                                  default value is %ux%u\n"
         "                                  maximum value is %ux%u\n"
-        "  read   <imgFS_filename> <imgID> [original|orig|thumbnail|thumb|small]:"
-        "      read an image from the imgFS and save it to a file."
-        "      default resolution is \"original\"."
-        "  insert <imgFS_filename> <imgID> <filename>: insert a new image in the imgFS."
+        "  read   <imgFS_filename> <imgID> [original|orig|thumbnail|thumb|small]:\n"
+        "      read an image from the imgFS and save it to a file.\n"
+        "      default resolution is \"original\".\n"
+        "  insert <imgFS_filename> <imgID> <filename>: insert a new image in the imgFS.\n"
         "  delete <imgFS_filename> <imgID>: delete image imgID from imgFS.\n",
         default_max_files, MAX_FLAG_MAX_FILES,
         default_thumb_res, default_thumb_res,
@@ -63,7 +63,7 @@ int help(int useless _unused, char** useless_too _unused)
         MAX_SMALL_RES, MAX_SMALL_RES
     );    
     
-    return h < 0 ? ERR_IO : ERR_NONE; 
+    return help < 0 ? ERR_IO : ERR_NONE; 
 }
 
 /**********************************************************************
@@ -197,39 +197,39 @@ int do_delete_cmd(int argc, char** argv)
     return delete; 
 }
 
-// int do_read_cmd(int argc, char **argv)
-// {
-//     M_REQUIRE_NON_NULL(argv);
-//     if (argc != 2 && argc != 3) return ERR_NOT_ENOUGH_ARGUMENTS;
+int do_read_cmd(int argc, char **argv)
+{
+    M_REQUIRE_NON_NULL(argv);
+    if (argc != 2 && argc != 3) return ERR_NOT_ENOUGH_ARGUMENTS;
 
-//     const char * const img_id = argv[1];
+    const char * const img_id = argv[1];
 
-//     const int resolution = (argc == 3) ? resolution_atoi(argv[2]) : ORIG_RES;
-//     if (resolution == -1) return ERR_RESOLUTIONS;
+    const int resolution = (argc == 3) ? resolution_atoi(argv[2]) : ORIG_RES;
+    if (resolution == -1) return ERR_RESOLUTIONS;
 
-//     struct imgfs_file myfile;
-//     zero_init_var(myfile);
-//     int error = do_open(argv[0], "rb+", &myfile);
-//     if (error != ERR_NONE) return error;
+    struct imgfs_file myfile;
+    zero_init_var(myfile);
+    int error = do_open(argv[0], "rb+", &myfile);
+    if (error != ERR_NONE) return error;
 
-//     char *image_buffer = NULL;
-//     uint32_t image_size = 0;
-//     error = do_read(img_id, resolution, &image_buffer, &image_size, &myfile);
-//     do_close(&myfile);
-//     if (error != ERR_NONE) {
-//         return error;
-//     }
+    char *image_buffer = NULL;
+    uint32_t image_size = 0;
+    error = do_read(img_id, resolution, &image_buffer, &image_size, &myfile);
+    do_close(&myfile);
+    if (error != ERR_NONE) {
+        return error;
+    }
 
-//     // Extracting to a separate image file.
-//     char* tmp_name = NULL;
-//     create_name(img_id, resolution, &tmp_name);
-//     if (tmp_name == NULL) return ERR_OUT_OF_MEMORY;
-//     error = write_disk_image(tmp_name, image_buffer, image_size);
-//     free(tmp_name);
-//     free(image_buffer);
+    // Extracting to a separate image file.
+    char* tmp_name = NULL;
+    create_name(img_id, resolution, &tmp_name);
+    if (tmp_name == NULL) return ERR_OUT_OF_MEMORY;
+    error = write_disk_image(tmp_name, image_buffer, image_size);
+    free(tmp_name);
+    free(image_buffer);
 
-//     return error;
-// }
+    return error;
+}
 
 int do_insert_cmd(int argc, char **argv)
 {
@@ -257,37 +257,81 @@ int do_insert_cmd(int argc, char **argv)
     return error;
 }
 
-
 static void create_name(const char* img_id, int resolution, char** new_name) {
-    const char * resolution_suffix;
+    const char *resolution_suffix;
     switch (resolution) {
-    case THUMB_RES:
-        resolution_suffix = "_thumb";
-        break;
-    case SMALL_RES:
-        resolution_suffix = "_small";
-        break;
-    case ORIG_RES:
-        resolution_suffix = "_orig";
-        break;
-    } 
-    new_name = *img_id + resolution_suffix + '.jpg';;
+        case THUMB_RES:
+            resolution_suffix = "_thumb";
+            break;
+        case SMALL_RES:
+            resolution_suffix = "_small";
+            break;
+        case ORIG_RES:
+            resolution_suffix = "_orig";
+            break;
+        default:
+            resolution_suffix = "_unknown";
+            break;
+    }
+    size_t name_length = strlen(img_id) + strlen(resolution_suffix) + strlen(".jpg") + 1;
+    *new_name = (char *)malloc(name_length);
+    snprintf(*new_name, name_length, "%s%s%s", img_id, resolution_suffix, ".jpg");
 }
+
 
 static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size) {
     FILE* file = fopen(filename, "wb+");
-    if (fseek(file, 0, SEEK_END) ||
-        fwrite(image_buffer, image_size, 1, file)){
+    if(!file) {
+        fclose(file);
         return ERR_IO;
     }
+    // Write the image from the buffer onto the disk
+    if (fseek(file, 0, SEEK_END) ||
+        fwrite(image_buffer, image_size, 1, file) != 1){
+        fclose(file);
+        return ERR_IO;
+    }
+    fclose(file);
     return ERR_NONE;
 }
 
+
 static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size) {
-    FILE* file = fopen(path, "rb+");
-    if (fseek(file, 0, SEEK_END) ||
-        fread(&image_buffer, image_size, 1, file)){
+    FILE *file = fopen(path, "rb");
+    if (file == NULL) { return ERR_IO; }
+
+    // Move to the end of the file to determine the size
+    if (fseek(file, 0, SEEK_END) != 0) {
+        fclose(file);
         return ERR_IO;
     }
+    long size = ftell(file);
+    if (size < 0) {
+        fclose(file);
+        return ERR_IO;
+    }
+    // Move back to the beginning of the file
+    if (fseek(file, 0, SEEK_SET) != 0) {
+        fclose(file);
+        return ERR_IO;
+    }
+
+    // Allocate memory for the image buffer
+    *image_buffer = (char *)malloc(size);
+    if (*image_buffer == NULL) {
+        fclose(file);
+        return ERR_OUT_OF_MEMORY;
+    }
+
+    // Read the file into the buffer
+    if (fread(*image_buffer, size, 1, file) != 1) {
+        free(*image_buffer);
+        fclose(file);
+        return ERR_IO;
+    }
+
+    *image_size = (uint32_t)size;
+
+    fclose(file);
     return ERR_NONE;
 }

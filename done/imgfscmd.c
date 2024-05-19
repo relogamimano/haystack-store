@@ -25,6 +25,8 @@ typedef struct {
 command_mapping commands[] = {
     {"list", do_list_cmd},
     {"create", do_create_cmd},
+    {"insert", do_insert_cmd},
+    {"read", do_read_cmd},
     {"delete", do_delete_cmd},
     {"help", help}
 };
