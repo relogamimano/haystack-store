@@ -88,7 +88,6 @@ int main(int argc, char *argv[]) {
     const char *filename = argv[2];
     FILE* file = fopen(filename, "r");
     ssize_t len = fsize(filename);
-    stat(filename, &st);
     fread(file_content_buf, MAX_CLIENT_SIZE, 1, file);
     // strcat(&file_content_buf, &DELIMITER);
     close(file);
