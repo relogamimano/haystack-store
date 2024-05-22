@@ -17,35 +17,42 @@ int main(int argc, char *argv[]) {
     }
     M_REQUIRE_NON_NULL(argv);
 
-    char buffer[MAX_SERVER_SIZE];
+    char buffer[MAX_SERVER_SIZE] = {0};
 
     uint16_t port = atoi(argv[1]);
     printf("Server started on port %d\n", port);
     int sockfd = tcp_server_init(port); // Server initialization
 
-    int error;
+    ssize_t error;
     if (error = sockfd < 0) { // Error check
         close(sockfd);
         perror("fail on tcp_server_init()\n");
         return error;
     }
-
+    
+    // Infinite loop to keep the server running
     while (1) {
         printf("Waiting for a size...\n");
         int clientfd = tcp_accept(sockfd); // Accepting a client
-        
+        if( error = clientfd < 0) { // Error check
+            close(clientfd); close(sockfd);
+            perror("Error on tcp_accept\n");
+            return error;
+        }
         // Receiving the file length
-        ssize_t len;
-        if(error = tcp_read(clientfd, &len, sizeof(len)) < 0) { // Error check
-            close(clientfd);
+        if( error = tcp_read(clientfd, buffer, sizeof(buffer)) < 0) { // Error check
+            close(clientfd); close(sockfd);
             perror("Error on tcp_read\n");
             return error;
         }
 
+        long len = strtol(buffer, NULL, 10); // Convert the string to a long
+
         if (len > MAX_SERVER_SIZE) { // If the file is too large
             printf("Received a size: %ld --> rejected\n", len);
-            if(error = tcp_send(sockfd, "file too large", strlen("file too large")) < 0) { // Error check while sending a negative response
-                close(clientfd);
+            error = tcp_send(sockfd, "file too large", strlen("file too large") + 1);
+            if(error < 0 || error != strlen("file too large") + 1) { // Error check while sending a negative response
+                close(clientfd); close(sockfd);
                 perror("Error on tcp_send\n");
                 return error;
             }
@@ -55,31 +62,31 @@ int main(int argc, char *argv[]) {
         printf("Received a size: %ld --> accepted\n", len);
 
         // Acknowledge receiving the size
-        if(error = tcp_send(clientfd, "Small file", strlen("Small file") + 1) < 0) { // Error check 
-            close(clientfd);
+        error = tcp_send(clientfd, "Small file", strlen("Small file") + 1);
+        if(error < 0 || error != strlen("Small file") + 1) { // Error check 
+            close(clientfd); close(sockfd);
             perror("Error on tcp_send\n");
             return error;
         }
 
         printf("About to receive file of %ld bytes\n", len);
 
-        // Receiving the file
-        if(error = tcp_read(clientfd, buffer, sizeof(buffer)) < 0) { // Error check
-            close(clientfd);
+        if(error = tcp_read(clientfd, buffer, len) < 0) { // Error check
+            close(clientfd); close(sockfd);
             perror("Error on tcp_read\n");
             return error;
         }
         
-        buffer[len] = '\0';
         printf("Received a file:\n%s\n", buffer);
 
         // Acknowledge receiving the file
-        if(error = tcp_send(clientfd, "Accepted", strlen("Accepted") + 1) < 0) {
-            close(clientfd);
+        error = tcp_send(clientfd, "Accepted", strlen("Accepted") + 1);
+        if(error < 0 || error != strlen("Accepted") + 1) {
+            close(clientfd); close(sockfd);
             perror("Error on tcp_send\n");
             return error;
         }
+        
     }
-    
     return ERR_NONE;
 }

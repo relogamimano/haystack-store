@@ -8,16 +8,10 @@
 #include <string.h>
 #include <unistd.h>
 #include <arpa/inet.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
-#include <unistd.h>
 #include <sys/socket.h>
 #include <netinet/in.h>
-#include <arpa/inet.h>
 #include <sys/stat.h>
 #include <fcntl.h>
-#include <sys/stat.h>
 #include <sys/types.h>
 
 
@@ -63,13 +57,6 @@ int tcp_client_init(uint16_t port) {
  * @param filename The name of the file.
  * @return The size of the file in bytes, or -1 if an error occurred.
  */
-off_t fsize(const char *filename) {
-    struct stat st; 
-
-    if (stat(filename, &st) == 0)
-        return st.st_size;
-    return -1; 
-}
 
 int main(int argc, char *argv[]) {
     if(argc != 3) {
@@ -78,8 +65,9 @@ int main(int argc, char *argv[]) {
     }
     M_REQUIRE_NON_NULL(argv);
 
-    char buffer[MAX_CLIENT_SIZE]; // Buffer meant to store the server's response
-    char file_content_buf[MAX_CLIENT_SIZE]; // Buffer meant to store the file's content before sending it
+    ssize_t error;
+
+    char buffer[MAX_CLIENT_SIZE];
     
     uint16_t port = atoi(argv[1]);
     printf("Talking to %d\n", port);
@@ -87,43 +75,60 @@ int main(int argc, char *argv[]) {
     // Get the file and copy its content into the buffer
     const char *filename = argv[2];
     FILE* file = fopen(filename, "r");
-    ssize_t len = fsize(filename);
-    fread(file_content_buf, MAX_CLIENT_SIZE, 1, file);
-    // strcat(&file_content_buf, &DELIMITER);
-    close(file);
+    fseek(file, 0, SEEK_END);
+    long file_size = ftell(file);
+    if(error = snprintf(buffer, sizeof(buffer), "%ld", file_size) < 0 ) {
+        close(file);
+        perror("Error on snprintf\n");
+        return error;
+    }
+    
     
     int sockfd = tcp_client_init(port); // Client initialization
-    int error;
+    
     if(error = sockfd < 0) {
+        close(sockfd); close(file);
         perror("TCP client failed to init");
         return sockfd;
     }
 
     // Send length
-    if(error = tcp_send(sockfd, &len, sizeof(len)) < 0) { // Error check
-        close(sockfd);
+    error = tcp_send(sockfd, buffer, strlen(buffer));
+    if(error < 0|| error != strlen(buffer)) { // Error check
+        close(sockfd); close(file);
         perror("Error on tcp_send\n");
         return error;
     }
     
-    printf("Sending size %d:\n", len);
+    printf("Sending size %s:\n", buffer);
 
     // Receive size acknowledgement ("Small file")
-    if(error = tcp_read(sockfd, &buffer, sizeof(buffer)) < 0){ // Error check
-        close(sockfd);
+    
+    if(error = tcp_read(sockfd, buffer, sizeof(buffer)) < 0) { // Error check
+        close(sockfd); close(file);
         perror("Error on tcp_read\n");
         return error;
     }
 
+    // Verify that the server acknowledged the file size
+    printf("buffer: \"%s\"\n", buffer);
     if (error = strcmp(buffer, "Small file") != 0) { // Error check
-        close(sockfd);
+        close(sockfd); close(file);
         perror("Server did not acknowledge file size\n");
         return error;
     }
     printf("Server responded: \"%s\"\n", buffer);
     
-    // Send file
-    if(error = tcp_send(sockfd, &file_content_buf, strlen(file_content_buf)) < 0) { // Error check
+    // Write the file to the buffer
+    if( fseek(file, 0, SEEK_SET) || fread(buffer, sizeof(buffer), 1, file) ) { // IO Error check
+        close(sockfd); close(file);
+        return ERR_IO;
+    }
+    close(file);
+    buffer[file_size] = '\0';
+    // Send the file
+    error = tcp_send(sockfd, buffer, file_size);
+    if(error < 0 || error != file_size) { // Error check
         close(sockfd);
         perror("Error on tcp_send\n");
         return error;
@@ -132,11 +137,13 @@ int main(int argc, char *argv[]) {
     printf("Sending %s:\n", filename);
 
     // Receive file acknoweledgement
-    if(error = tcp_read(sockfd, &buffer, sizeof(buffer)) < 0) { // Error check
-        close(sockfd); perror("Error on tcp_read\n");
+    if(error = tcp_read(sockfd, buffer, sizeof(buffer)) < 0) { // Error check
+        close(sockfd);
+        perror("Error on tcp_read\n");
         return error;
     }
 
+    // Verify that the server received the file content
     if (error = strcmp(buffer, "Accepted") != 0) { // Error check
         close(sockfd);
         perror("Server did not acknowledge receving the complete file\n");
@@ -145,6 +152,7 @@ int main(int argc, char *argv[]) {
     
     printf("Done\n");
     close(sockfd); 
+
     
     return ERR_NONE;
 }
