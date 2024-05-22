@@ -32,12 +32,12 @@ MK_OUR_ERR(ERR_IO);
 /*******************************************************************
  * Handle connection
  */
-static void *handle_connection(void *arg)
-{
-    if (arg == NULL) return &our_ERR_INVALID_ARGUMENT;
+// static void *handle_connection(void *arg)
+// {
+//     if (arg == NULL) return &our_ERR_INVALID_ARGUMENT;
 
-    return &our_ERR_NONE;
-}
+//     return &our_ERR_NONE;
+// }
 
 
 /*******************************************************************

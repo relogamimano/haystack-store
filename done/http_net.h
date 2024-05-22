@@ -35,3 +35,5 @@ int http_serve_file(int connection, const char* filename);
 int http_reply(int connection, const char* status, const char* headers, const char* body, size_t body_len);
 
 void http_close(void);
+
+static void* handle_connection(void* arg);
