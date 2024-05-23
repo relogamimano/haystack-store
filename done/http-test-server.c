@@ -15,7 +15,6 @@ int main(void)
            DEFAULT_LISTENING_PORT);
 
     while ((err = http_receive()) == ERR_NONE);
-
     fprintf(stderr, "http_receive() failed\n");
     fprintf(stderr, "%s\n", ERR_MSG(err));
 
