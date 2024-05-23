@@ -15,10 +15,14 @@
 #include <signal.h>
 #include <unistd.h>
 #include <stdlib.h> // abort()
+#include <bits/sigaction.h>
+
 
 /********************************************************************/
 static void signal_handler(int sig_num _unused)
 {
+    server_shutdown(); 
+    exit(0); 
 }
 
 /********************************************************************/
@@ -42,6 +46,16 @@ static void set_signal_handler(void)
 
 int main (int argc, char *argv[])
 {
+    int err = server_startup(argc, argv); 
 
-    return 0;
+    if (err != ERR_NONE) {
+        // add juicy log messages here 
+        return err; 
+    }
+
+    while ((err = http_receive()) == ERR_NONE);
+    fprintf(stderr, "http_receive() failed\n");
+    fprintf(stderr, "%s\n", ERR_MSG(err));
+    set_signal_handler(); 
+    return err;
 }
