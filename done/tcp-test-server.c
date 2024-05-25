@@ -86,7 +86,8 @@ int main(int argc, char *argv[]) {
             perror("Error on tcp_send\n");
             return error;
         }
-        
+        close(clientfd);
     }
+    close(sockfd); 
     return ERR_NONE;
 }
