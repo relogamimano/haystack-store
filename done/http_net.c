@@ -42,32 +42,52 @@ static void *handle_connection(void *arg)
     if (socket < 0) return &our_ERR_INVALID_ARGUMENT;
 
     // Read the HTTP header from the socket
-    char buffer[MAX_HEADER_SIZE] = {0};
+    //char rcvbuf[MAX_HEADER_SIZE] = {0};
+    char* rcvbuf = malloc(MAX_HEADER_SIZE); 
 
     size_t total_bytes_read = 0;
     ssize_t bytes_read;
+    struct http_message message; 
+    int already_extended = 0; //not necessary, just check the size of rcvbuf (change later) 
+    int content_length = 0; 
+
+
     while (total_bytes_read < MAX_HEADER_SIZE) {
-        bytes_read = tcp_read(socket, buffer + total_bytes_read, sizeof(buffer + total_bytes_read));
+
+        bytes_read = tcp_read(socket, rcvbuf + total_bytes_read, sizeof(rcvbuf + total_bytes_read));
         
         if (bytes_read < 0) {
             printf("socket: %ld\n", socket);
             perror("tcp_read() in failed in handle_connection()\n");
+            close(socket); // added this 
             return &our_ERR_IO;
         }
+
+        int parsed = http_parse_message(rcvbuf, bytes_read, &message, &content_length);
+
+        if (parsed < 0) { return parsed; }
+
+        if (parsed == 0 && content_length > 0 && total_bytes_read < content_length && !already_extended) {
+            realloc(rcvbuf, MAX_HEADER_SIZE + content_length); 
+            if (rcvbuf == NULL) { return ERR_OUT_OF_MEMORY; }
+            already_extended = 1; 
+            rcvbuf+= total_bytes_read; // ? 
+        }
+        
+        if (parsed > 0) {
+            int callback = cb(&message, socket); 
+        }
+
+
+        // I think remove this because the condition is equivalent to parsed > 0
+        // ----------
         // Check if the headers contain HTTP_HDR_END_DELIM
-        if (strstr(buffer, HTTP_HDR_END_DELIM) != NULL) {
+        if (strstr(rcvbuf, HTTP_HDR_END_DELIM) != NULL) {
             break;
         }
         total_bytes_read += bytes_read;
-    }
+        // ----------
 
-    // Check if the headers contain "test: ok"
-    if (strstr(buffer, "test: ok") != NULL) {
-        // Send HTTP_OK status
-        http_reply(socket, HTTP_OK, "", NULL, 0);
-    } else {
-        // Send HTTP_BAD_REQUEST status
-        http_reply(socket, HTTP_BAD_REQUEST, "", NULL, 0);
     }
 
     return &our_ERR_NONE;
