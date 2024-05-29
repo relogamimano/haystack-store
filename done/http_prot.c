@@ -2,9 +2,7 @@
 #include "http_prot.h"
 #include "error.h"
 
-// Function to check if the URI in the HTTP message matches the target URI
 int http_match_uri(const struct http_message *message, const char *target_uri) {
-    // Check for null pointers
     M_REQUIRE_NON_NULL(message); M_REQUIRE_NON_NULL(target_uri);
     size_t len = message->uri.len; 
     char* val = message->uri.val; 
@@ -21,9 +19,7 @@ int http_match_uri(const struct http_message *message, const char *target_uri) {
     return 1; 
 }
 
-// Function to parse the HTTP message and extract the method, URI, headers, and body
 int http_parse_message(const char *stream, size_t bytes_received, struct http_message *out, int *content_len) {
-    // Check for null pointers
     M_REQUIRE_NON_NULL(stream); M_REQUIRE_NON_NULL(out); M_REQUIRE_NON_NULL(content_len);
     struct http_string method; 
     struct http_string uri; 
@@ -78,14 +74,12 @@ int http_parse_message(const char *stream, size_t bytes_received, struct http_me
     return 1;
 }
 
-// Function to get the value of a variable from the URL
 int http_get_var(const struct http_string* url, const char* name, char* out, size_t out_len) {
-    // Check for null pointers
     M_REQUIRE_NON_NULL(url); M_REQUIRE_NON_NULL(name); M_REQUIRE_NON_NULL(out);
     size_t len = url->len; 
     char* val = url->val; 
 
-    // Create a string with the format "name="
+    
     char name_equals[strlen(name) + 2];
     strcpy(name_equals, name);
     strcat(name_equals, "=");
@@ -113,9 +107,8 @@ int http_get_var(const struct http_string* url, const char* name, char* out, siz
     return end - start; 
 }
 
-// Function to check if the HTTP method matches a given verb
+
 int http_match_verb(const struct http_string* method, const char* verb) {
-    // Check for null pointers
     M_REQUIRE_NON_NULL(method); M_REQUIRE_NON_NULL(verb);
     size_t len = method->len; 
     char* val = method->val; 
@@ -132,8 +125,9 @@ int http_match_verb(const struct http_string* method, const char* verb) {
     return 1; 
 }
 
-// Helper function to get the next token from a message
+
 static_unless_test const char* get_next_token(const char* message, const char* delimiter, struct http_string* output) {
+    M_REQUIRE_NON_NULL(message); M_REQUIRE_NON_NULL(delimiter); M_REQUIRE_NON_NULL(output);
     const char* end_token = strstr(message, delimiter);
     if (end_token == NULL) {
         return NULL; 
@@ -143,9 +137,8 @@ static_unless_test const char* get_next_token(const char* message, const char* d
     return end_token + strlen(delimiter);
 }
 
-// Helper function to parse the headers from a message
+
 static_unless_test const char* http_parse_headers(const char* header_start, struct http_message* output) {
-    // Check for null pointers
     M_REQUIRE_NON_NULL(header_start); M_REQUIRE_NON_NULL(output); 
     const char* message = header_start; 
     
