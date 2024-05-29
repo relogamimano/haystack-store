@@ -106,13 +106,55 @@ int handle_http_message(struct http_message* msg, int connection)
     debug_printf("handle_http_message() on connection %d. URI: %.*s\n",
                  connection,
                  (int) msg->uri.len, msg->uri.val);
-    if (http_match_uri(msg, URI_ROOT "/list")      ||
-        (http_match_uri(msg, URI_ROOT "/insert")
-         && http_match_verb(&msg->method, "POST")) ||
-        http_match_uri(msg, URI_ROOT "/read")      ||
-        http_match_uri(msg, URI_ROOT "/delete"))
-        return reply_302_msg(connection);
+
+    if (http_match_verb(&msg->uri, "/") || http_match_uri(msg, "/index.html")) {
+        return http_serve_file(connection, BASE_FILE);
+    }
+
+    if (http_match_uri(msg, URI_ROOT "/list")) {
+        return handle_list_call(connection); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/insert") && http_match_verb(&msg->method, "POST")) {
+        return handle_insert_call(connection); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/read")) {
+        return handle_read_call(connection); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/delete")) {
+        return handle_connection(connection); 
+    }
     else
         return reply_error_msg(connection, ERR_INVALID_COMMAND);
+}
+
+
+
+// Heavy TODO, these 4 methods 
+int handle_list_call(int connection, const struct imgfs_file* imgfs_file, char** json) {
+    int list = do_list(imgfs_file, JSON, json); 
+    if (list) {
+        return list; 
+    }
+    char* header; 
+    char* body; 
+    size_t bodylen; 
+    int repl = http_reply(connection, HTTP_OK, header, body, bodylen); 
+    if (repl < 0) {
+        close(connection); 
+    }
+    return repl; 
+}
+
+int handle_read_call(int connection) {
+    //http_get_var()
+    return reply_302_msg(connection); 
+}
+
+int handle_delete_call(int connection) {
+    return reply_302_msg(connection); 
+}
+
+int handle_insert_call(int connection) {
+    return reply_302_msg(connection); 
 }
 

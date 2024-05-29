@@ -68,6 +68,7 @@ static void *handle_connection(void *arg)
             printf("socket: %ld\n", socket);
             perror("tcp_read() in failed in handle_connection()\n");
             close(socket); // added this 
+            free(rcvbuf); 
             return &our_ERR_IO;
         }
 
@@ -78,12 +79,17 @@ static void *handle_connection(void *arg)
         if (parsed < 0) { 
             free(rcvbuf); 
             close(socket); 
+            printf("error in parsing"); 
             return &parsed;
         }
 
         if (parsed == 0 && content_length > 0 && total_bytes_read < content_length && !already_extended) {
             realloc(rcvbuf, MAX_HEADER_SIZE + content_length); 
-            if (rcvbuf == NULL) { return ERR_OUT_OF_MEMORY; }
+            if (rcvbuf == NULL) { 
+                free(rcvbuf); 
+                close(socket); 
+                return &our_ERR_OUT_OF_MEMORY; 
+            }
             already_extended = 1; 
             rcvbuf+= total_bytes_read; // ? 
         }
@@ -91,15 +97,6 @@ static void *handle_connection(void *arg)
         if (parsed > 0) {
             int callback = cb(&message, socket); 
         }
-
-
-        // I think remove this because the condition is equivalent to parsed > 0
-        // ----------
-        // Check if the headers contain HTTP_HDR_END_DELIM
-        if (strstr(rcvbuf, HTTP_HDR_END_DELIM) != NULL) {
-            break;
-        }
-        // ----------
 
     }
 
@@ -154,9 +151,53 @@ int http_receive(void)
  */
 int http_serve_file(int connection, const char* filename)
 {
-    int ret = ERR_NONE;
+    M_REQUIRE_NON_NULL(filename);
+
+    // open file
+    FILE* file = fopen(filename, "r");
+    if (file == NULL) {
+        fprintf(stderr, "http_serve_file(): Failed to open file \"%s\"\n", filename);
+        return http_reply(connection, "404 Not Found", "", "", 0);
+    }
+
+    // get its size
+    fseek(file, 0, SEEK_END);
+    const long pos = ftell(file);
+    if (pos < 0) {
+        fprintf(stderr, "http_serve_file(): Failed to tell file size of \"%s\"\n",
+                filename);
+        fclose(file);
+        return ERR_IO;
+    }
+    rewind(file);
+    const size_t file_size = (size_t) pos;
+
+    // read file content
+    char* const buffer = calloc(file_size + 1, 1);
+    if (buffer == NULL) {
+        fprintf(stderr, "http_serve_file(): Failed to allocate memory to serve \"%s\"\n", filename);
+        fclose(file);
+        return ERR_IO;
+    }
+
+    const size_t bytes_read = fread(buffer, 1, file_size, file);
+    if (bytes_read != file_size) {
+        fprintf(stderr, "http_serve_file(): Failed to read \"%s\"\n", filename);
+        fclose(file);
+        return ERR_IO;
+    }
+
+    // send the file
+    const int  ret = http_reply(connection, HTTP_OK,
+                                "Content-Type: text/html; charset=utf-8" HTTP_LINE_DELIM,
+                                buffer, file_size);
+
+    // garbage collecting
+    fclose(file);
+    free(buffer);
     return ret;
 }
+
 
 /*******************************************************************
  * Create and send HTTP reply
