@@ -35,15 +35,23 @@ MK_OUR_ERR(ERR_IO);
 /*******************************************************************
  * Handle connection
 */
+
+// ask TA mercredi about this method. 
 static void *handle_connection(void *arg)
 {
     if (arg == NULL) return &our_ERR_INVALID_ARGUMENT;
     int socket = *((int*)arg);
+    //free(arg); 
     if (socket < 0) return &our_ERR_INVALID_ARGUMENT;
 
     // Read the HTTP header from the socket
     //char rcvbuf[MAX_HEADER_SIZE] = {0};
     char* rcvbuf = malloc(MAX_HEADER_SIZE); 
+
+    if (rcvbuf == NULL) { 
+        close(socket); 
+        return &our_ERR_OUT_OF_MEMORY; 
+    }
 
     size_t total_bytes_read = 0;
     ssize_t bytes_read;
@@ -63,9 +71,15 @@ static void *handle_connection(void *arg)
             return &our_ERR_IO;
         }
 
+        total_bytes_read += bytes_read;
+
         int parsed = http_parse_message(rcvbuf, bytes_read, &message, &content_length);
 
-        if (parsed < 0) { return parsed; }
+        if (parsed < 0) { 
+            free(rcvbuf); 
+            close(socket); 
+            return &parsed;
+        }
 
         if (parsed == 0 && content_length > 0 && total_bytes_read < content_length && !already_extended) {
             realloc(rcvbuf, MAX_HEADER_SIZE + content_length); 
@@ -85,7 +99,6 @@ static void *handle_connection(void *arg)
         if (strstr(rcvbuf, HTTP_HDR_END_DELIM) != NULL) {
             break;
         }
-        total_bytes_read += bytes_read;
         // ----------
 
     }
