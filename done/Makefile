@@ -22,6 +22,12 @@ CFLAGS += $(shell pkg-config vips --cflags)
 # Add the library to the linker
 LDLIBS += $(shell pkg-config vips --libs)
 
+# Add options for the compiler to include the library's headers
+CFLAGS += -I/usr/include/json-c
+
+# Add the library to the linker
+LDLIBS += -ljson-c
+
 #########################################################################
 # DO NOT EDIT BELOW THIS LINE
 # 
