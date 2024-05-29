@@ -18,6 +18,12 @@
 
 #include <stddef.h>
 
+#ifdef IN_CS202_UNIT_TEST
+#define static_unless_test
+#else
+#define static_unless_test static
+#endif 
+
 struct http_string {
     const char *val; // Warning! This is *NOT* null-terminated (thus len field below)
     size_t len;
@@ -72,3 +78,28 @@ int http_get_var(const struct http_string* url, const char* name, char* out, siz
  * @brief Compare method with verb and return 1 if they are equal, 0 otherwise
  */
 int http_match_verb(const struct http_string* method, const char* verb);
+
+/**
+ * @brief Retrieves the next token from a given message string.
+ *
+ * This function searches for the next token in the message string, delimited by the specified delimiter.
+ * The token is returned as a null-terminated string and is stored in the output parameter.
+ *
+ * @param message The message string to search for tokens.
+ * @param delimiter The delimiter used to separate tokens.
+ * @param output A pointer to a struct http_string where the token will be stored.
+ * @return A pointer to the next token in the message string, or NULL if no more tokens are found.
+ */
+static_unless_test const char* get_next_token(const char* message, const char* delimiter, struct http_string* output);
+
+/**
+ * @brief Parses the headers of an HTTP message.
+ *
+ * This function takes a pointer to the start of the headers in the HTTP message and a pointer to a struct http_message.
+ * It parses the headers and populates the struct http_message with the parsed data.
+ *
+ * @param header_start A pointer to the start of the headers in the HTTP message.
+ * @param output A pointer to a struct http_message where the parsed data will be stored.
+ * @return A pointer to the next character after the parsed headers in the HTTP message.
+ */
+static_unless_test const char* http_parse_headers(const char* header_start, struct http_message* output);
