@@ -25,14 +25,10 @@ int http_parse_message(const char *stream, size_t bytes_received, struct http_me
     struct http_string uri; 
 
     // Parse the method and URI from the stream
-    const char* message = get_next_token(stream, " ", &method); 
-    if (message == NULL) {
-        return -1; 
-    }
+    const char* message;
+    message = get_next_token(stream, " ", &method); 
+    
     message = get_next_token(message, " ", &uri); 
-    if (message == NULL) {
-        return -1; 
-    }
 
     // Store the method and URI in the output struct
     out->method = method; 
