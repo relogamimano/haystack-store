@@ -44,8 +44,6 @@ static void *handle_connection(void *arg)
     //free(arg); 
     if (socket < 0) return &our_ERR_INVALID_ARGUMENT;
 
-    // Read the HTTP header from the socket
-    //char rcvbuf[MAX_HEADER_SIZE] = {0};
     char* rcvbuf = malloc(MAX_HEADER_SIZE); 
 
     if (rcvbuf == NULL) { 
@@ -53,53 +51,120 @@ static void *handle_connection(void *arg)
         return &our_ERR_OUT_OF_MEMORY; 
     }
 
-    size_t total_bytes_read = 0;
-    ssize_t bytes_read;
-    struct http_message message; 
+// TODO changer les noms 
+    char* buff_excess = NULL; 
+    size_t count = 0;
+    int content_len = 0; 
+    ssize_t max_read = MAX_HEADER_SIZE; 
+    struct http_message output;  // "message"
+    char* header_pos = NULL; // position ptr 
+
     int already_extended = 0; //not necessary, just check the size of rcvbuf (change later) 
-    int content_length = 0; 
+    //int content_length = 0; 
 
 
-    while (total_bytes_read < MAX_HEADER_SIZE) {
-
-        bytes_read = tcp_read(socket, rcvbuf + total_bytes_read, sizeof(rcvbuf + total_bytes_read));
+    while (1) {
+        // changer ce blaze 
+        ssize_t read_ret = tcp_read(socket, rcvbuf + count, max_read);
         
-        if (bytes_read < 0) {
-            printf("socket: %d\n", socket);
-            perror("tcp_read() in failed in handle_connection()\n");
+        if (read_ret < 0) {
+            //printf("socket: %d\n", socket);
+            //perror("tcp_read() in failed in handle_connection()\n");
             close(socket); // added this 
             free(rcvbuf); 
+            rcvbuf = NULL; 
             return &our_ERR_IO;
         }
 
-        total_bytes_read += bytes_read;
+        //total_bytes_read += bytes_read;
+        count += (size_t)read_ret; 
 
-        int parsed = http_parse_message(rcvbuf, bytes_read, &message, &content_length);
+        //check closed connection (pas sur) 
+        if (read_ret == 0) {
+            free(rcvbuf); 
+            rcvbuf = NULL; 
+            close(socket); 
+            return &our_ERR_NONE; 
+        }
+
+        int parsed = http_parse_message(rcvbuf, count, &output, &content_len);
 
         if (parsed < 0) { 
             free(rcvbuf); 
+            rcvbuf = NULL; 
             close(socket); 
-            printf("error in parsing"); 
-            return &parsed;
+            return &our_ERR_IO;
         }
 
-        if (parsed == 0 && content_length > 0 && total_bytes_read < content_length && !already_extended) {
-            realloc(rcvbuf, MAX_HEADER_SIZE + content_length); 
-            if (rcvbuf == NULL) { 
+        if (parsed == 0 && content_len > 0 && count < content_len && !already_extended) {
+            char* new_buf = realloc(rcvbuf, MAX_HEADER_SIZE + (size_t)content_len);
+            if (new_buf == NULL) {
                 free(rcvbuf); 
+                rcvbuf = NULL; 
                 close(socket); 
-                return &our_ERR_OUT_OF_MEMORY; 
+                return &our_ERR_OUT_OF_MEMORY;
             }
+            rcvbuf = new_buf; 
+            new_buf = NULL; 
             already_extended = 1; 
-            rcvbuf+= total_bytes_read; // ? 
+            //rcvbuf+= total_bytes_read; // ? 
+            max_read = (size_t)content_len; // = ou += 
         }
         
         if (parsed > 0) {
-            int callback = cb(&message, socket); 
+            int ret_cb = cb(&output, socket); 
+            if (ret_cb < 0) {
+                free(rcvbuf); 
+                rcvbuf = NULL; 
+                close(socket); 
+                return &our_ERR_IO; 
+            }
+            header_pos = strstr(rcvbuf, HTTP_HDR_END_DELIM); 
+            header_pos += strlen(HTTP_HDR_END_DELIM); 
+            size_t header_size = (size_t)(header_pos - rcvbuf); 
+
+            if (count > header_size + (size_t)content_len) {
+                buff_excess= malloc(count - (header_size + (size_t)content_len)); 
+                if (buff_excess == NULL) {
+                    free(rcvbuf); 
+                    rcvbuf = NULL; 
+                    close(socket); 
+                    return &our_ERR_OUT_OF_MEMORY; 
+                }
+            }
+
         }
+
+        char* new_buff = realloc(rcvbuf, MAX_HEADER_SIZE); 
+        //check si ça rate ET si excess_buff est pas nul (y'a pas forcement d ele'0xcess)
+        rcvbuf = new_buff; 
+        new_buff = NULL; 
+
+        max_read = MAX_HEADER_SIZE; 
+        count = 0; 
+        memset(&output, 0, sizeof(struct http_message)); 
+        memset(rcvbuf, 0, MAX_HEADER_SIZE); 
+        content_len = 0; 
+        header_pos = NULL; 
+
+        if (buff_excess != NULL) {
+            memcpy(rcvbuf, buff_excess, count - (header_pos - rcvbuf) - (size_t)content_len); 
+            count = strlen(rcvbuf); 
+            free(buff_excess); 
+            buff_excess = NULL; 
+        }
+
+        if (count >= max_read) {
+            free(rcvbuf); 
+            rcvbuf = NULL; 
+            close(socket); 
+            return &our_ERR_IO; 
+        }
+
 
     }
 
+    // pas obligé psk while (1) 
     return &our_ERR_NONE;
 }
 

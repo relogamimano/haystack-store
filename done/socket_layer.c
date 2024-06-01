@@ -15,7 +15,7 @@ int tcp_server_init(uint16_t port) {
     int sockfd = socket(AF_INET, SOCK_STREAM, 0); 
     if (sockfd < 0) {
         perror("Error on socket creation"); 
-        close(sockfd);
+        //close(sockfd); elle a pas réussi a etre créée donc pk la close 
         return ERR_IO; 
     }
 
