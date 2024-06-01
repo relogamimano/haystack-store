@@ -10,9 +10,7 @@
 int do_list(const struct imgfs_file* imgfs_file, 
         enum do_list_mode output_mode, char** json) {
 
-
     M_REQUIRE_NON_NULL(imgfs_file); 
-    M_REQUIRE_NON_NULL(json); 
     int err;
 
     if (output_mode == STDOUT) {
@@ -65,6 +63,8 @@ int do_list(const struct imgfs_file* imgfs_file,
         *json = malloc(strlen(json_str) + 1);
         strcpy(*json, json_str);
         json_object_put(json_obj_obj); // free the json object
+    } else {
+        TO_BE_IMPLEMENTED();
     }
 
     return ERR_NONE; 
