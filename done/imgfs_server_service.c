@@ -38,19 +38,23 @@ int server_startup (int argc, char **argv)
 
     print_header(&fs_file.header); 
 
-    int port_number = argv[2]; 
-
-    if (port_number == NULL) {
-        port_number = DEFAULT_LISTENING_PORT; 
+    uint16_t port_number = DEFAULT_LISTENING_PORT; 
+    if (argc >= 3) {
+        port_number = atouint16(argv[2]); 
+        if (port_number == 0) {
+            do_close(&fs_file);
+            return ERR_INVALID_ARGUMENT;
+        }
     }
 
     int init = http_init(port_number, handle_http_message); 
 
     if (init < 0) {
+        do_close(&fs_file);
         return init; 
     }
 
-    fprintf("ImgFS server started on http_//localhost:%s", port_number); 
+    fprintf(stdout, "ImgFS server started on http://localhost:%d\n", port_number); 
 
     return ERR_NONE; 
 
@@ -139,79 +143,66 @@ int handle_list_call(int connection, struct http_message* msg) {
     const char* header = "Content-Type: application/json" HTTP_LINE_DELIM;  
     //char* body; 
     //size_t bodylen; 
-    int repl = http_reply(connection, HTTP_OK, header, json_out, sizeof(json_out)); 
-    if (repl != ERR_NONE) {
-        close(connection); 
-    }
+    int repl = http_reply(connection, HTTP_OK, header, json_out, strlen(json_out)); 
     free(json_out); 
+    if (repl != ERR_NONE) {
+        return reply_error_msg(connection, repl); 
+    }
     return repl; 
 }
 
 int handle_read_call(int connection, struct http_message* msg) {
  
-    char* img_id = malloc(MAX_IMG_ID+1); 
-    if (img_id == NULL) {
-        free(img_id); 
-        return reply_error_msg(connection, ERR_OUT_OF_MEMORY); 
-    }
+    char img_id[MAX_IMG_ID + 1]; 
     int get_id = http_get_var(&msg->uri, "res", img_id, sizeof(img_id)); 
     if (get_id <= 0) {
         return reply_error_msg(connection, get_id); 
     }
-    int res_str = 10; // enough to hold "orig" "small" and "thumb"
-    char* res = malloc(res_str); 
-    if (res == NULL) {
-        free(img_id); 
-        free(res); 
-        return reply_error_msg(connection, ERR_OUT_OF_MEMORY);
-    }
+    int res_str_length = 10; // enough to hold "orig" "small" and "thumb"
+    char res[res_str_length]; 
     int get_res = http_get_var(&msg->uri, "img_id", res, sizeof(res)); 
     if (get_res < 0) {
-        free(res); 
-        free(img_id); 
-        return get_res; 
+        return reply_error_msg(connection, get_res); 
     }
     int res_code = resolution_atoi(res); 
-    char** buf = malloc(sizeof(msg->body)); 
-    uint32_t size = sizeof(buf);  
-    int read = do_read(img_id, res_code, buf, size, &fs_file); 
+    if (res_code < 0) {
+        return reply_error_msg(connection, res_code);
+    }
+    char* buf = NULL; 
+    uint32_t size = 0; 
+    int read = do_read(img_id, res_code, &buf, &size, &fs_file); 
     if (read != ERR_NONE) {
-        free(img_id); 
-        free(res); 
         free(buf); 
         return reply_error_msg(connection, read); 
     }
     const char* header =  "Content-Type: image/jpeg" HTTP_LINE_DELIM;
     int repl = http_reply(connection, HTTP_OK, header, buf, size); 
+    free(buf); 
     if (repl != ERR_NONE) {
-        free(img_id); 
-        free(res); 
-        free(res); 
         return reply_error_msg(connection, repl); 
     } 
-    return reply_302_msg(connection); 
+    return repl; 
 }
 
 int handle_delete_call(int connection, struct http_message* msg) {
-    char* img_id = malloc(MAX_IMG_ID+1); 
-    if (img_id == NULL) {
-        free(img_id); 
-        return reply_error_msg(connection, ERR_OUT_OF_MEMORY); 
-    }
+    char img_id[MAX_IMG_ID+1]; 
     int get_id = http_get_var(&msg->uri, "img_id", img_id, sizeof(img_id));
     if (get_id <= 0) {
-        free(img_id); 
         return reply_error_msg(connection, get_id);
     }
     int delete = do_delete(img_id, &fs_file); 
     if (delete != ERR_NONE) {
-        free(img_id); 
         return reply_error_msg(connection, delete); 
     }
-    return reply_302_msg(connection); 
-
-
+    char location_header[256];
+    snprintf(location_header, sizeof(location_header), "Location: http://localhost:%d/index.html" HTTP_LINE_DELIM, server_port); 
+    int repl = http_reply(connection, "302 Found", location_header, "", 0); 
+    if (repl != ERR_NONE) {
+        return reply_error_msg(connection, repl); 
+    } 
+    return repl; 
 }
+
 
 int handle_insert_call(int connection, struct http_message* msg)
 {
@@ -220,16 +211,30 @@ int handle_insert_call(int connection, struct http_message* msg)
     if (res <= 0) {
         return reply_error_msg(connection, ERR_INVALID_ARGUMENT);
     }
-
     if (msg->body.len == 0) {
         return reply_error_msg(connection, ERR_INVALID_ARGUMENT);
     }
 
-    res = do_insert(msg->body.val, msg->body.len, img_id, &fs_file);
-    if (res != ERR_NONE) {
-        return reply_error_msg(connection, res);
+    char* image_content = malloc(msg->body.len);
+    if (image_content == NULL) {
+        return reply_error_msg(connection, ERR_OUT_OF_MEMORY);
     }
 
-    return reply_302_msg(connection);
+    memcpy(image_content, msg->body.val, msg->body.len);
+
+    int insert = do_insert(image_content, msg->body.len, img_id, &fs_file);
+    free(image_content); 
+
+    if (insert != ERR_NONE) {
+        return reply_error_msg(connection, insert);
+    }
+
+    char location_header[256];
+    snprintf(location_header, sizeof(location_header), "Location: http://localhost:%d/index.html" HTTP_LINE_DELIM, server_port); 
+    int repl = http_reply(connection, "302 Found", location_header, "", 0); 
+    if (repl != ERR_NONE) {
+        return reply_error_msg(connection, repl); 
+    } 
+    return repl; 
 }
 

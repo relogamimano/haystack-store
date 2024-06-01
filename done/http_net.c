@@ -65,7 +65,7 @@ static void *handle_connection(void *arg)
         bytes_read = tcp_read(socket, rcvbuf + total_bytes_read, sizeof(rcvbuf + total_bytes_read));
         
         if (bytes_read < 0) {
-            printf("socket: %ld\n", socket);
+            printf("socket: %d\n", socket);
             perror("tcp_read() in failed in handle_connection()\n");
             close(socket); // added this 
             free(rcvbuf); 
