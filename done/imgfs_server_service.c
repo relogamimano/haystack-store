@@ -179,7 +179,7 @@ int handle_read_call(int connection, struct http_message* msg) {
         free(img_id); 
         free(res); 
         free(buf); 
-        return reply_error_msh(connection, read); 
+        return reply_error_msg(connection, read); 
     }
     const char* header =  "Content-Type: image/jpeg" HTTP_LINE_DELIM;
     int repl = http_reply(connection, HTTP_OK, header, buf, size); 
