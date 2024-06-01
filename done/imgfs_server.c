@@ -46,6 +46,14 @@ static void set_signal_handler(void)
 
 int main (int argc, char *argv[])
 {
+
+    M_REQUIRE_NON_NULL(argv); 
+    if (argc < 2 ) {
+        return ERR_NOT_ENOUGH_ARGUMENTS; 
+    }
+    if (argc > 3) {
+        return ERR_INVALID_ARGUMENT; 
+    }
     int err = server_startup(argc, argv); 
 
     if (err != ERR_NONE) {
@@ -53,9 +61,13 @@ int main (int argc, char *argv[])
         return err; 
     }
 
+    set_signal_handler(); 
+
     while ((err = http_receive()) == ERR_NONE);
     fprintf(stderr, "http_receive() failed\n");
     fprintf(stderr, "%s\n", ERR_MSG(err));
-    set_signal_handler(); 
+    
+    server_shutdown(); 
+    
     return err;
 }

@@ -145,13 +145,16 @@ int handle_list_call(int connection, struct http_message* msg) {
     //size_t bodylen; 
     int repl = http_reply(connection, HTTP_OK, header, json_out, strlen(json_out)); 
     free(json_out); 
+    json_out = NULL; 
     if (repl != ERR_NONE) {
         return reply_error_msg(connection, repl); 
     }
-    return repl; 
+    return ERR_NONE; 
 }
 
 int handle_read_call(int connection, struct http_message* msg) {
+
+    M_REQUIRE_NON_NULL(msg); 
  
     char img_id[MAX_IMG_ID + 1]; 
     int get_id = http_get_var(&msg->uri, "res", img_id, sizeof(img_id)); 
@@ -162,11 +165,11 @@ int handle_read_call(int connection, struct http_message* msg) {
     char res[res_str_length]; 
     int get_res = http_get_var(&msg->uri, "img_id", res, sizeof(res)); 
     if (get_res < 0) {
-        return reply_error_msg(connection, get_res); 
+        return reply_error_msg(connection, ERR_NOT_ENOUGH_ARGUMENTS); 
     }
     int res_code = resolution_atoi(res); 
     if (res_code < 0) {
-        return reply_error_msg(connection, res_code);
+        return reply_error_msg(connection, ERR_RESOLUTIONS);
     }
     char* buf = NULL; 
     uint32_t size = 0; 
@@ -178,6 +181,7 @@ int handle_read_call(int connection, struct http_message* msg) {
     const char* header =  "Content-Type: image/jpeg" HTTP_LINE_DELIM;
     int repl = http_reply(connection, HTTP_OK, header, buf, size); 
     free(buf); 
+    buf = NULL; 
     if (repl != ERR_NONE) {
         return reply_error_msg(connection, repl); 
     } 
@@ -185,10 +189,12 @@ int handle_read_call(int connection, struct http_message* msg) {
 }
 
 int handle_delete_call(int connection, struct http_message* msg) {
+
+    M_REQUIRE_NON_NULL(msg); 
     char img_id[MAX_IMG_ID+1]; 
     int get_id = http_get_var(&msg->uri, "img_id", img_id, sizeof(img_id));
     if (get_id <= 0) {
-        return reply_error_msg(connection, get_id);
+        return reply_error_msg(connection, ERR_NOT_ENOUGH_ARGUMENTS);
     }
     int delete = do_delete(img_id, &fs_file); 
     if (delete != ERR_NONE) {
@@ -206,10 +212,11 @@ int handle_delete_call(int connection, struct http_message* msg) {
 
 int handle_insert_call(int connection, struct http_message* msg)
 {
+    M_REQUIRE_NON_NULL(msg); 
     char img_id[MAX_IMG_ID + 1];
     int res = http_get_var(&msg->uri, "name", img_id, sizeof(img_id));
     if (res <= 0) {
-        return reply_error_msg(connection, ERR_INVALID_ARGUMENT);
+        return reply_error_msg(connection, ERR_NOT_ENOUGH_ARGUMENTS);
     }
     if (msg->body.len == 0) {
         return reply_error_msg(connection, ERR_INVALID_ARGUMENT);
