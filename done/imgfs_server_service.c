@@ -106,13 +106,130 @@ int handle_http_message(struct http_message* msg, int connection)
     debug_printf("handle_http_message() on connection %d. URI: %.*s\n",
                  connection,
                  (int) msg->uri.len, msg->uri.val);
-    if (http_match_uri(msg, URI_ROOT "/list")      ||
-        (http_match_uri(msg, URI_ROOT "/insert")
-         && http_match_verb(&msg->method, "POST")) ||
-        http_match_uri(msg, URI_ROOT "/read")      ||
-        http_match_uri(msg, URI_ROOT "/delete"))
-        return reply_302_msg(connection);
+
+    if (http_match_verb(&msg->uri, "/") || http_match_uri(msg, "/index.html")) {
+        return http_serve_file(connection, BASE_FILE);
+    }
+
+    if (http_match_uri(msg, URI_ROOT "/list")) {
+        return handle_list_call(connection, msg); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/insert") && http_match_verb(&msg->method, "POST")) {
+        return handle_insert_call(connection, msg); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/read")) {
+        return handle_read_call(connection, msg); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/delete")) {
+        return handle_delete_call(connection, msg); 
+    }
     else
         return reply_error_msg(connection, ERR_INVALID_COMMAND);
+}
+
+
+
+// Heavy TODO, these 4 methods 
+int handle_list_call(int connection, struct http_message* msg) {
+    char* json_out = NULL; 
+    int list = do_list(&fs_file, JSON, &json_out); 
+    if (list != ERR_NONE) {
+        return reply_error_msg(connection, list); 
+    }
+    const char* header = "Content-Type: application/json" HTTP_LINE_DELIM;  
+    //char* body; 
+    //size_t bodylen; 
+    int repl = http_reply(connection, HTTP_OK, header, json_out, sizeof(json_out)); 
+    if (repl != ERR_NONE) {
+        close(connection); 
+    }
+    free(json_out); 
+    return repl; 
+}
+
+int handle_read_call(int connection, struct http_message* msg) {
+ 
+    char* img_id = malloc(MAX_IMG_ID+1); 
+    if (img_id == NULL) {
+        free(img_id); 
+        return reply_error_msg(connection, ERR_OUT_OF_MEMORY); 
+    }
+    int get_id = http_get_var(&msg->uri, "res", img_id, sizeof(img_id)); 
+    if (get_id <= 0) {
+        return reply_error_msg(connection, get_id); 
+    }
+    int res_str = 10; // enough to hold "orig" "small" and "thumb"
+    char* res = malloc(res_str); 
+    if (res == NULL) {
+        free(img_id); 
+        free(res); 
+        return reply_error_msg(connection, ERR_OUT_OF_MEMORY);
+    }
+    int get_res = http_get_var(&msg->uri, "img_id", res, sizeof(res)); 
+    if (get_res < 0) {
+        free(res); 
+        free(img_id); 
+        return get_res; 
+    }
+    int res_code = resolution_atoi(res); 
+    char** buf = malloc(sizeof(msg->body)); 
+    uint32_t size = sizeof(buf);  
+    int read = do_read(img_id, res_code, buf, size, &fs_file); 
+    if (read != ERR_NONE) {
+        free(img_id); 
+        free(res); 
+        free(buf); 
+        return reply_error_msh(connection, read); 
+    }
+    const char* header =  "Content-Type: image/jpeg" HTTP_LINE_DELIM;
+    int repl = http_reply(connection, HTTP_OK, header, buf, size); 
+    if (repl != ERR_NONE) {
+        free(img_id); 
+        free(res); 
+        free(res); 
+        return reply_error_msg(connection, repl); 
+    } 
+    return reply_302_msg(connection); 
+}
+
+int handle_delete_call(int connection, struct http_message* msg) {
+    char* img_id = malloc(MAX_IMG_ID+1); 
+    if (img_id == NULL) {
+        free(img_id); 
+        return reply_error_msg(connection, ERR_OUT_OF_MEMORY); 
+    }
+    int get_id = http_get_var(&msg->uri, "img_id", img_id, sizeof(img_id));
+    if (get_id <= 0) {
+        free(img_id); 
+        return reply_error_msg(connection, get_id);
+    }
+    int delete = do_delete(img_id, &fs_file); 
+    if (delete != ERR_NONE) {
+        free(img_id); 
+        return reply_error_msg(connection, delete); 
+    }
+    return reply_302_msg(connection); 
+
+
+}
+
+int handle_insert_call(int connection, struct http_message* msg)
+{
+    char img_id[MAX_IMG_ID + 1];
+    int res = http_get_var(&msg->uri, "name", img_id, sizeof(img_id));
+    if (res <= 0) {
+        return reply_error_msg(connection, ERR_INVALID_ARGUMENT);
+    }
+
+    if (msg->body.len == 0) {
+        return reply_error_msg(connection, ERR_INVALID_ARGUMENT);
+    }
+
+    res = do_insert(msg->body.val, msg->body.len, img_id, &fs_file);
+    if (res != ERR_NONE) {
+        return reply_error_msg(connection, res);
+    }
+
+    return reply_302_msg(connection);
 }
 
