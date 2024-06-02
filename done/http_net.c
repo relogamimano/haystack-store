@@ -276,7 +276,7 @@ int http_reply(int connection, const char* status, const char* headers, const ch
     // Allocate the buffer
     char *buffer = malloc(total_size);
     if (buffer == NULL) {
-        return our_ERR_OUT_OF_MEMORY;
+        return ERR_OUT_OF_MEMORY;
     }
 
     //
@@ -290,13 +290,14 @@ int http_reply(int connection, const char* status, const char* headers, const ch
     
     // Send the buffer to the socket
     ssize_t bytes_sent = tcp_send(connection, buffer, total_size);
-
-    // Free the buffer
-    free(buffer);
+    free(buffer); // dont need it anymore s
+    if (bytes_sent < 0) {
+        return ERR_IO; 
+    }
 
     if (bytes_sent != total_size || bytes_sent < 0) {
         perror("send error");
-        return our_ERR_IO;
+        return ERR_IO;
     }
 
     return ERR_NONE;
