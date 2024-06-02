@@ -162,6 +162,7 @@ static void *handle_connection(void *arg)
             memset(rcvbuf, 0, MAX_HEADER_SIZE); 
             content_len = 0; 
             pos_ptr = NULL; 
+            int already_extended = 0; 
 
             if (buff_excess != NULL) {
                 memcpy(rcvbuf, buff_excess, total_bytes_read - (pos_ptr - rcvbuf) - (size_t)content_len); 
