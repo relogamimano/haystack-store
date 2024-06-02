@@ -9,6 +9,8 @@
 #include <stdlib.h>
 #include <string.h>
 #include <stdint.h> // uint16_t
+#include <signal.h> // signal
+#include <pthread.h> // pthread_mutex_t
 
 #include "error.h"
 #include "util.h" // atouint16
@@ -19,6 +21,8 @@
 // Main in-memory structure for imgFS
 static struct imgfs_file fs_file;
 static uint16_t server_port;
+
+pthread_mutex_t imgfs_mutex;
 
 #define URI_ROOT "/imgfs"
 
@@ -56,6 +60,8 @@ int server_startup (int argc, char **argv)
 
     fprintf(stdout, "ImgFS server started on http://localhost:%d\n", port_number); 
 
+    pthread_mutex_init(&imgfs_mutex, NULL); // Initialize mutex
+
     return ERR_NONE; 
 
 }
@@ -68,6 +74,7 @@ void server_shutdown (void)
     fprintf(stderr, "Shutting down...\n");
     http_close();
     do_close(&fs_file);
+    pthread_mutex_destroy(&imgfs_mutex); // Destroy mutex
 }
 
 
@@ -135,8 +142,11 @@ int handle_http_message(struct http_message* msg, int connection)
 
 // Heavy TODO, these 4 methods 
 int handle_list_call(int connection, struct http_message* msg) {
+    M_REQUIRE_NON_NULL(msg);
+    // pthread_mutex_lock(&imgfs_mutex);
     char* json_out = NULL; 
     int list = do_list(&fs_file, JSON, &json_out); 
+    // pthread_mutex_unlock(&imgfs_mutex);
     if (list != ERR_NONE) {
         return reply_error_msg(connection, list); 
     }
@@ -173,7 +183,9 @@ int handle_read_call(int connection, struct http_message* msg) {
     }
     char* buf = NULL; 
     uint32_t size = 0; 
+    // pthread_mutex_lock(&imgfs_mutex);
     int read = do_read(img_id, res_code, &buf, &size, &fs_file); 
+    // pthread_mutex_unlock(&imgfs_mutex);
     if (read != ERR_NONE) {
         free(buf); 
         return reply_error_msg(connection, read); 
@@ -196,7 +208,9 @@ int handle_delete_call(int connection, struct http_message* msg) {
     if (get_id <= 0) {
         return reply_error_msg(connection, ERR_NOT_ENOUGH_ARGUMENTS);
     }
+    // pthread_mutex_lock(&imgfs_mutex);
     int delete = do_delete(img_id, &fs_file); 
+    // pthread_mutex_unlock(&imgfs_mutex);
     if (delete != ERR_NONE) {
         return reply_error_msg(connection, delete); 
     }
@@ -229,7 +243,9 @@ int handle_insert_call(int connection, struct http_message* msg)
 
     memcpy(image_content, msg->body.val, msg->body.len);
 
+    // pthread_mutex_lock(&imgfs_mutex);
     int insert = do_insert(image_content, msg->body.len, img_id, &fs_file);
+    // pthread_mutex_unlock(&imgfs_mutex);
     free(image_content); 
 
     if (insert != ERR_NONE) {
