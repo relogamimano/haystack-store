@@ -12,6 +12,7 @@
 #include <stdint.h>
 #include <unistd.h>
 #include <signal.h>
+#include <pthread.h>
 
 #include "http_prot.h"
 #include "http_net.h"
@@ -39,6 +40,12 @@ MK_OUR_ERR(ERR_IO);
 // ask TA mercredi about this method. 
 static void *handle_connection(void *arg)
 {
+     sigset_t mask;
+    sigemptyset(&mask);
+    sigaddset(&mask, SIGINT );
+    sigaddset(&mask, SIGTERM);
+    pthread_sigmask(SIG_BLOCK, &mask, NULL);
+
     if (arg == NULL) return &our_ERR_INVALID_ARGUMENT;
     int socket = *((int*)arg);
     //free(arg); 
@@ -198,7 +205,6 @@ void http_close(void)
  */
 int http_receive(void)
 {
-    
     int fd = tcp_accept(passive_socket);
     if (fd < 0) {
         return ERR_IO; 
@@ -209,6 +215,28 @@ int http_receive(void)
     }
     close(fd);
     return ERR_NONE;
+    // pthread_attr_t attr;
+    // pthread_attr_init(&attr);
+    // pthread_attr_setdetachstate(&attr, PTHREAD_CREATE_DETACHED);
+    // int *active_socket = malloc(sizeof(int));
+    // *active_socket = tcp_accept(passive_socket);
+    // if (*active_socket < 0) {
+    //     free(active_socket);
+    //     return ERR_IO; 
+    // }
+    // pthread_t thread;
+    // if (pthread_create(&thread, &attr, handle_connection, active_socket) != 0) {
+    //     free(active_socket);
+    //     return ERR_THREADING;
+    // }
+    // if(handle_connection(*active_socket) < 0) {
+    //     pthread_attr_destroy(&attr);
+    //     free(active_socket);
+    //     return ERR_IO;
+    // }
+    // pthread_attr_destroy(&attr);
+    // free(active_socket);
+    // return ERR_NONE;
 }
 
 
@@ -271,7 +299,7 @@ int http_serve_file(int connection, const char* filename)
 int http_reply(int connection, const char* status, const char* headers, const char *body, size_t body_len) {
     // Compute the total size of the header and body
     size_t total_size = strlen(HTTP_PROTOCOL_ID) + strlen(" ") + strlen(status) + strlen(HTTP_LINE_DELIM) +
-                        strlen(headers) + strlen("Content-Length: ") + body_len + strlen(HTTP_HDR_END_DELIM);
+                        strlen(headers) + strlen("Content-Length: ") + sizeof(body_len) + strlen(HTTP_HDR_END_DELIM);
 
     // Allocate the buffer
     char *buffer = malloc(total_size);
@@ -280,7 +308,7 @@ int http_reply(int connection, const char* status, const char* headers, const ch
     }
 
     // Format the header
-    int header_len = snprintf(buffer, total_size, "%s %s%s%sContent-Length: %zu%s",
+    int header_len = snprintf(buffer, total_size, "%s%s%s%sContent-Length: %zu%s",
                               HTTP_PROTOCOL_ID, status, HTTP_LINE_DELIM, headers, body_len, HTTP_HDR_END_DELIM);
 
     // Copy the body to the end of the buffer
@@ -290,9 +318,13 @@ int http_reply(int connection, const char* status, const char* headers, const ch
     
     // Send the buffer to the socket
     ssize_t bytes_sent = tcp_send(connection, buffer, total_size);
-
-    // Free the buffer
     free(buffer);
+    if(bytes_sent < 0) {
+        perror("send error");
+        return ERR_IO;
+    }
+    // Free the buffer
+    
 
     if (bytes_sent != total_size || bytes_sent < 0) {
         perror("send error");

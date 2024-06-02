@@ -51,6 +51,8 @@ int server_startup (int argc, char **argv)
         }
     }
 
+    server_port = port_number;
+
     int init = http_init(port_number, handle_http_message); 
 
     if (init < 0) {
