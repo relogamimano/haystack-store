@@ -108,39 +108,6 @@ static int reply_302_msg(int connection)
     return http_reply(connection, "302 Found", location, "", 0);
 }
 
-/**********************************************************************
- * Simple handling of http message. TO BE UPDATED WEEK 13
- ********************************************************************** */
-int handle_http_message(struct http_message* msg, int connection)
-{
-    M_REQUIRE_NON_NULL(msg);
-    debug_printf("handle_http_message() on connection %d. URI: %.*s\n",
-                 connection,
-                 (int) msg->uri.len, msg->uri.val);
-
-    if (http_match_verb(&msg->uri, "/") || http_match_uri(msg, "/index.html")) {
-        return http_serve_file(connection, BASE_FILE);
-    }
-
-    if (http_match_uri(msg, URI_ROOT "/list")) {
-        return handle_list_call(connection, msg); 
-    }
-    else if (http_match_uri(msg, URI_ROOT "/insert") && http_match_verb(&msg->method, "POST")) {
-        return handle_insert_call(connection, msg); 
-    }
-    else if (http_match_uri(msg, URI_ROOT "/read")) {
-        return handle_read_call(connection, msg); 
-    }
-    else if (http_match_uri(msg, URI_ROOT "/delete")) {
-        return handle_delete_call(connection, msg); 
-    }
-    else
-        return reply_error_msg(connection, ERR_INVALID_COMMAND);
-}
-
-
-
-// Heavy TODO, these 4 methods 
 int handle_list_call(int connection, struct http_message* msg) {
     M_REQUIRE_NON_NULL(msg);
     // pthread_mutex_lock(&imgfs_mutex);
@@ -261,3 +228,33 @@ int handle_insert_call(int connection, struct http_message* msg)
     return repl; 
 }
 
+
+/**********************************************************************
+ * Simple handling of http message. TO BE UPDATED WEEK 13
+ ********************************************************************** */
+int handle_http_message(struct http_message* msg, int connection)
+{
+    M_REQUIRE_NON_NULL(msg);
+    debug_printf("handle_http_message() on connection %d. URI: %.*s\n",
+                 connection,
+                 (int) msg->uri.len, msg->uri.val);
+
+    if (http_match_verb(&msg->uri, "/") || http_match_uri(msg, "/index.html")) {
+        return http_serve_file(connection, BASE_FILE);
+    }
+
+    if (http_match_uri(msg, URI_ROOT "/list")) {
+        return handle_list_call(connection, msg); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/insert") && http_match_verb(&msg->method, "POST")) {
+        return handle_insert_call(connection, msg); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/read")) {
+        return handle_read_call(connection, msg); 
+    }
+    else if (http_match_uri(msg, URI_ROOT "/delete")) {
+        return handle_delete_call(connection, msg); 
+    }
+    else
+        return reply_error_msg(connection, ERR_INVALID_COMMAND);
+}

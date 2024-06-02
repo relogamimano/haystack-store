@@ -19,7 +19,7 @@ int tcp_server_init(uint16_t port) {
         return ERR_IO; 
     }
 
-    memset(&address, "\0", sizeof(address));
+    memset(&address, 0, sizeof(address));
 
     address.sin_family = AF_INET; 
     address.sin_port = htons(port); 
