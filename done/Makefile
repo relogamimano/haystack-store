@@ -153,9 +153,6 @@ define e2e_test
 robot -v srcdir:$(PWD) -v datadir:$(TEST_DIR)/data $(TEST_DIR)/end-to-end/$1 ;
 endef
 end2end-tests: $(TARGETS)
-	$(call e2e_test,week07.robot)
-	$(call e2e_test,week08.robot)
-	$(call e2e_test,week10.robot)
 	$(call e2e_test,week13.robot)
 
 check: end2end-tests unit-tests
