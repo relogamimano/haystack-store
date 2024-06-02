@@ -269,18 +269,18 @@ int http_serve_file(int connection, const char* filename)
  * Create and send HTTP reply
  */
 int http_reply(int connection, const char* status, const char* headers, const char *body, size_t body_len) {
-    // Compute the total size of the header and body
-    size_t total_size = strlen(HTTP_PROTOCOL_ID) + strlen(" ") + strlen(status) + strlen(HTTP_LINE_DELIM) +
-                        strlen(headers) + strlen("Content-Length: ") + body_len + strlen(HTTP_HDR_END_DELIM);
+    size_t header_size = strlen(HTTP_PROTOCOL_ID) + strlen(" ") + strlen(status) + strlen(HTTP_LINE_DELIM) +
+                        strlen(headers) + strlen("Content-Length: ") + sizeof(body_len) + strlen(HTTP_HDR_END_DELIM);
 
+    size_t total_size = header_size + body_len; 
     // Allocate the buffer
     char *buffer = malloc(total_size);
     if (buffer == NULL) {
         return our_ERR_OUT_OF_MEMORY;
     }
 
-    // Format the header
-    int header_len = snprintf(buffer, total_size, "%s %s%s%sContent-Length: %zu%s",
+    //
+    int header_len = snprintf(buffer, total_size, "%s%s%s%sContent-Length: %zu%s",
                               HTTP_PROTOCOL_ID, status, HTTP_LINE_DELIM, headers, body_len, HTTP_HDR_END_DELIM);
 
     // Copy the body to the end of the buffer
@@ -301,3 +301,5 @@ int http_reply(int connection, const char* status, const char* headers, const ch
 
     return ERR_NONE;
 }
+
+
