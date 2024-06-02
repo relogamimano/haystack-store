@@ -136,6 +136,7 @@ int handle_read_call(int connection, struct http_message* msg) {
     M_REQUIRE_NON_NULL(msg); 
  
     char img_id[MAX_IMG_ID + 1]; 
+    memset(img_id, 0, sizeof(img_id));
     int get_id = http_get_var(&msg->uri, "img_id", img_id, sizeof(img_id)); 
     if (get_id <= 0) {
         return reply_error_msg(connection, get_id); 
@@ -143,9 +144,8 @@ int handle_read_call(int connection, struct http_message* msg) {
     if (get_id == 0) {
         return reply_error_msg(connection, ERR_NOT_ENOUGH_ARGUMENTS); 
     }
-    fprintf(stderr, "img_id: %s\n", img_id);
-    int res_str_length = 10; // enough to hold "orig" "small" and "thumb"
-    char res[res_str_length]; 
+    char res[100]; // enough for "orig" "thumb" and "small"
+    memset(res, 0, sizeof(res));
     int get_res = http_get_var(&msg->uri, "res", res, sizeof(res)); 
     if (get_res < 0) {
         return reply_error_msg(connection, get_res); 

@@ -130,4 +130,3 @@ int resolution_atoi (const char* str)
     }
     return -1;
 }
-
