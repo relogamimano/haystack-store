@@ -126,15 +126,16 @@ int handle_read_call(int connection, struct http_message* msg) {
     M_REQUIRE_NON_NULL(msg); 
  
     char img_id[MAX_IMG_ID + 1]; 
-    int get_id = http_get_var(&msg->uri, "res", img_id, sizeof(img_id)); 
+    int get_id = http_get_var(&msg->uri, "img_id", img_id, sizeof(img_id)); 
     if (get_id <= 0) {
-        return reply_error_msg(connection, get_id); 
+        return reply_error_msg(connection, ERR_INVALID_ARGUMENT); 
     }
+    fprintf(stderr, "img_id: %s\n", img_id);
     int res_str_length = 10; // enough to hold "orig" "small" and "thumb"
     char res[res_str_length]; 
-    int get_res = http_get_var(&msg->uri, "img_id", res, sizeof(res)); 
+    int get_res = http_get_var(&msg->uri, "res", res, sizeof(res)); 
     if (get_res < 0) {
-        return reply_error_msg(connection, ERR_NOT_ENOUGH_ARGUMENTS); 
+        return reply_error_msg(connection, ERR_RESOLUTIONS); 
     }
     int res_code = resolution_atoi(res); 
     if (res_code < 0) {
