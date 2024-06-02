@@ -24,17 +24,11 @@ int http_parse_message(const char *stream, size_t bytes_received, struct http_me
     struct http_string method; 
     struct http_string uri; 
 
-    // changé ça 
-    //const char* message;
-    //message = get_next_token(stream, " ", &method); 
+    // Parse the method and URI from the stream
+    const char* message;
     
-    //message = get_next_token(message, " ", &uri); 
-
-    const char* message = get_next_token(stream, " ", &method); 
-    if (!message) return ERR_INVALID_ARGUMENT;
-    
+    message = get_next_token(stream, " ", &method); 
     message = get_next_token(message, " ", &uri); 
-    if (!message) return ERR_INVALID_ARGUMENT;
 
     // Store the method and URI in the output struct
     out->method = method; 
@@ -42,10 +36,7 @@ int http_parse_message(const char *stream, size_t bytes_received, struct http_me
 
     // Parse the headers from the stream
     message = get_next_token(message, HTTP_LINE_DELIM, &method);
-    if (!message) return ERR_INVALID_ARGUMENT;
-
     message = http_parse_headers(message, out); 
-    if (!message) return ERR_INVALID_ARGUMENT;
 
     // If header has not been fully parsed, return 0
     if(message == NULL) {
@@ -68,19 +59,13 @@ int http_parse_message(const char *stream, size_t bytes_received, struct http_me
     }
 
     // If there is no body (Content-Length value is 0) or you were able to read the full body
-    //if (message == NULL || bytes_received - (message - stream) < *content_len || *content_len == 0) {
-    //    return 0; 
-    //}  
-
-    if (bytes_received - (message - stream) < *content_len) {
+    if (message == NULL || bytes_received - (message - stream) < *content_len || *content_len == 0) {
         return 0; 
-    }
- 
+    }   
     
     // Store the body in the output struct
     out->body.val = message; 
-    //out->body.len = bytes_received - (message - stream);  
-    out->body.len = *content_len; 
+    out->body.len = bytes_received - (message - stream);  
     
     return 1;
 }
@@ -98,7 +83,7 @@ int http_get_var(const struct http_string* url, const char* name, char* out, siz
     // Find the start of the variable value in the URL
     char* start = strstr(val, name_equals); 
     if (start == NULL) {
-        return ERR_NOT_ENOUGH_ARGUMENTS;
+        return 0; 
     }
     start += strlen(name_equals); 
 
