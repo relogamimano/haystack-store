@@ -30,6 +30,8 @@ MK_OUR_ERR(ERR_INVALID_ARGUMENT);
 MK_OUR_ERR(ERR_OUT_OF_MEMORY);
 MK_OUR_ERR(ERR_IO);
 
+MK_OUR_ERR(ERR_DEBUG); 
+
 
 
 /*******************************************************************
@@ -67,7 +69,7 @@ static void *handle_connection(void *arg)
             close(socket); // added this 
             free(rcvbuf); 
             rcvbuf = NULL; 
-            return &our_ERR_IO;
+            return &our_ERR_IO; 
         }
 
         total_bytes_read += (size_t)cur_read; 
@@ -86,7 +88,7 @@ static void *handle_connection(void *arg)
             free(rcvbuf); 
             rcvbuf = NULL; 
             close(socket); 
-            return &our_ERR_IO;
+            return &our_ERR_IO; 
         }
 
         if (parsed == 0 && content_len > 0 && total_bytes_read < content_len && !already_extended) {
@@ -160,9 +162,8 @@ static void *handle_connection(void *arg)
             total_bytes_read = 0; 
             memset(&message, 0, sizeof(struct http_message)); 
             memset(rcvbuf, 0, MAX_HEADER_SIZE); 
-            content_len = 0; 
+            content_len = 0;    
             pos_ptr = NULL; 
-            int already_extended = 0; 
 
             if (buff_excess != NULL) {
                 memcpy(rcvbuf, buff_excess, total_bytes_read - (pos_ptr - rcvbuf) - (size_t)content_len); 

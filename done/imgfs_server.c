@@ -16,6 +16,8 @@
 #include <unistd.h>
 #include <stdlib.h> // abort()
 #include <bits/sigaction.h>
+#include <vips/vips.h>
+
 
 
 /********************************************************************/
@@ -54,6 +56,11 @@ int main (int argc, char *argv[])
     if (argc > 3) {
         return ERR_INVALID_ARGUMENT; 
     }
+
+    if(VIPS_INIT(argv[0])) {
+        vips_error_exit("unable to start VIPS");
+    }
+
     int err = server_startup(argc, argv); 
 
     if (err != ERR_NONE) {
