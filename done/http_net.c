@@ -105,10 +105,11 @@ static void *handle_connection(void *arg)
                 return &our_ERR_OUT_OF_MEMORY;
             }
             rcvbuf = new_buf; 
-            new_buf = NULL; 
+            //new_buf = NULL;  //maybe re add this 
             already_extended = 1; 
             //rcvbuf+= total_bytes_read; // ? 
             max_read = (size_t)content_len; // = ou += 
+            continue; //maybe remove this 
         }
         
         if (parsed > 0) {
@@ -120,55 +121,71 @@ static void *handle_connection(void *arg)
                 return &our_ERR_IO; 
             }
             pos_ptr = strstr(rcvbuf, HTTP_HDR_END_DELIM); 
-            pos_ptr += strlen(HTTP_HDR_END_DELIM); 
-            size_t header_size = (size_t)(pos_ptr - rcvbuf); 
+            if (pos_ptr) {
+                pos_ptr += strlen(HTTP_HDR_END_DELIM); 
+                size_t header_size = (size_t)(pos_ptr - rcvbuf); 
 
-            if (total_bytes_read > header_size + (size_t)content_len) {
-                buff_excess= malloc(total_bytes_read - (header_size + (size_t)content_len)); 
-                if (buff_excess == NULL) {
-                    free(rcvbuf); 
-                    rcvbuf = NULL; 
-                    close(socket); 
-                    return &our_ERR_OUT_OF_MEMORY; 
+                if (total_bytes_read > header_size + (size_t)content_len) {
+                    buff_excess = malloc(total_bytes_read - (header_size + (size_t)content_len)); 
+                    if (buff_excess == NULL) {
+                        free(rcvbuf); 
+                        close(socket); 
+                        return &our_ERR_OUT_OF_MEMORY; 
+                    }
+                    memcpy(buff_excess, pos_ptr + content_len, total_bytes_read - (header_size + (size_t)content_len));
                 }
             }
+            //pos_ptr += strlen(HTTP_HDR_END_DELIM); 
+            //size_t header_size = (size_t)(pos_ptr - rcvbuf); 
 
-        }
+            //if (total_bytes_read > header_size + (size_t)content_len) {
+            //    buff_excess= malloc(total_bytes_read - (header_size + (size_t)content_len)); 
+            //    if (buff_excess == NULL) {
+            //        free(rcvbuf); 
+            //        rcvbuf = NULL; 
+            //        close(socket); 
+            //        return &our_ERR_OUT_OF_MEMORY; 
+            //    }
+            //}
 
-        char* new_buff = realloc(rcvbuf, MAX_HEADER_SIZE); 
-        //check si ça rate ET si excess_buff est pas nul (y'a pas forcement d ele'0xcess)
-        if (new_buff == NULL) {
-            free(rcvbuf); 
-            if (buff_excess != NULL) {
-                free(buff_excess); 
-                buff_excess = NULL; 
+
+            char* new_buff = realloc(rcvbuf, MAX_HEADER_SIZE); 
+            //check si ça rate ET si excess_buff est pas nul (y'a pas forcement d ele'0xcess)
+            if (new_buff == NULL) {
+                free(rcvbuf); 
+                if (buff_excess != NULL) {
+                    free(buff_excess); 
+                    buff_excess = NULL; 
+                }
+                close(socket); 
                 return &our_ERR_OUT_OF_MEMORY; 
             }
-        }
-        rcvbuf = new_buff; 
-        new_buff = NULL; 
+            rcvbuf = new_buff; 
+            //new_buff = NULL;  //maybe re add this 
 
-        max_read = MAX_HEADER_SIZE; 
-        total_bytes_read = 0; 
-        memset(&message, 0, sizeof(struct http_message)); 
-        memset(rcvbuf, 0, MAX_HEADER_SIZE); 
-        content_len = 0; 
-        pos_ptr = NULL; 
+            max_read = MAX_HEADER_SIZE; 
+            total_bytes_read = 0; 
+            memset(&message, 0, sizeof(struct http_message)); 
+            memset(rcvbuf, 0, MAX_HEADER_SIZE); 
+            content_len = 0; 
+            pos_ptr = NULL; 
 
-        if (buff_excess != NULL) {
-            memcpy(rcvbuf, buff_excess, total_bytes_read - (pos_ptr - rcvbuf) - (size_t)content_len); 
-            total_bytes_read = strlen(rcvbuf); 
-            free(buff_excess); 
-            buff_excess = NULL; 
-        }
+            if (buff_excess != NULL) {
+                memcpy(rcvbuf, buff_excess, total_bytes_read - (pos_ptr - rcvbuf) - (size_t)content_len); 
+                total_bytes_read = strlen(rcvbuf); 
+                free(buff_excess); 
+                buff_excess = NULL; 
+            }
 
-        if (total_bytes_read >= max_read) {
-            free(rcvbuf); 
-            rcvbuf = NULL; 
-            close(socket); 
-            return &our_ERR_IO; 
-        }
+            if (total_bytes_read >= max_read) {
+                free(rcvbuf); 
+                rcvbuf = NULL; 
+                close(socket); 
+                return &our_ERR_IO; 
+            }
 
+
+    }
 
     }
 
@@ -210,9 +227,12 @@ int http_receive(void)
         return ERR_IO; 
     }
 
-    if(handle_connection(&fd) < 0) {
-        return ERR_IO;
+    int *err = handle_connection(&fd);
+    if (*err != ERR_NONE) {
+        close(fd);
+        return *err;
     }
+
     close(fd);
     return ERR_NONE;
     // pthread_attr_t attr;
