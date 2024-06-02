@@ -98,7 +98,7 @@ int http_get_var(const struct http_string* url, const char* name, char* out, siz
     // Find the start of the variable value in the URL
     char* start = strstr(val, name_equals); 
     if (start == NULL) {
-        return 0; 
+        return ERR_NOT_ENOUGH_ARGUMENTS;
     }
     start += strlen(name_equals); 
 
