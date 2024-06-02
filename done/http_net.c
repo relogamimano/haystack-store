@@ -42,11 +42,11 @@ MK_OUR_ERR(ERR_DEBUG);
 // ask TA mercredi about this method. 
 static void *handle_connection(void *arg)
 {
-     sigset_t mask;
-    sigemptyset(&mask);
-    sigaddset(&mask, SIGINT );
-    sigaddset(&mask, SIGTERM);
-    pthread_sigmask(SIG_BLOCK, &mask, NULL);
+    // sigset_t mask;
+    // sigemptyset(&mask);
+    // sigaddset(&mask, SIGINT );
+    // sigaddset(&mask, SIGTERM);
+    // pthread_sigmask(SIG_BLOCK, &mask, NULL);
 
     if (arg == NULL) return &our_ERR_INVALID_ARGUMENT;
     int socket = *((int*)arg);
