@@ -1,0 +1,326 @@
+scan-build: Using '/usr/lib/llvm-14/bin/clang' for static analysis
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfscmd.o imgfscmd.c
+imgfscmd.c: In function 'main':
+imgfscmd.c:56:22: warning: comparison of integer expressions of different signedness: 'int' and 'long unsigned int' [-Wsign-compare]
+   56 |         for(i = 0; i < NUM_COMMANDS; i++) {
+      |                      ^
+In file included from imgfscmd.c:10:
+imgfscmd.c: At top level:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o error.o error.c
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o http_net.o http_net.c
+http_net.c: In function 'handle_connection':
+http_net.c:73:72: warning: conversion to 'size_t' {aka 'long unsigned int'} from 'ssize_t' {aka 'long int'} may change the sign of the result [-Wsign-conversion]
+   73 |         ssize_t cur_read = tcp_read(socket, rcvbuf + total_bytes_read, max_read);
+      |                                                                        ^~~~~~~~
+http_net.c:101:64: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'int' [-Wsign-compare]
+  101 |         if (parsed == 0 && content_len > 0 && total_bytes_read < content_len && !already_extended) {
+      |                                                                ^
+http_net.c:177:62: warning: conversion to 'long unsigned int' from 'long int' may change the sign of the result [-Wsign-conversion]
+  177 |                 memcpy(rcvbuf, buff_excess, total_bytes_read - (pos_ptr - rcvbuf) - (size_t)content_len);
+      |                                                              ^
+http_net.c:183:34: warning: comparison of integer expressions of different signedness: 'size_t' {aka 'long unsigned int'} and 'ssize_t' {aka 'long int'} [-Wsign-compare]
+  183 |             if (total_bytes_read >= max_read) {
+      |                                  ^~
+http_net.c: In function 'http_reply':
+http_net.c:349:20: warning: comparison of integer expressions of different signedness: 'ssize_t' {aka 'long int'} and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+  349 |     if (bytes_sent != total_size || bytes_sent < 0) {
+      |                    ^~
+In file included from http_net.c:17:
+http_net.c: At top level:
+http_prot.h:93:32: warning: 'get_next_token' declared 'static' but never defined [-Wunused-function]
+   93 | static_unless_test const char* get_next_token(const char* message, const char* delimiter, struct http_string* output);
+      |                                ^~~~~~~~~~~~~~
+http_prot.h:105:32: warning: 'http_parse_headers' declared 'static' but never defined [-Wunused-function]
+  105 | static_unless_test const char* http_parse_headers(const char* header_start, struct http_message* output);
+      |                                ^~~~~~~~~~~~~~~~~~
+http_net.c:27:12: warning: 'our_ERR_DEBUG' defined but not used [-Wunused-variable]
+   27 | static int our_ ## X = X
+      |            ^~~~
+http_net.c:34:1: note: in expansion of macro 'MK_OUR_ERR'
+   34 | MK_OUR_ERR(ERR_DEBUG);
+      | ^~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o http_prot.o http_prot.c
+http_prot.c: In function 'http_match_uri':
+http_prot.c:8:17: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+    8 |     char* val = message->uri.val;
+      |                 ^~~~~~~
+http_prot.c: In function 'http_parse_message':
+http_prot.c:52:28: warning: implicit declaration of function 'atoi' [-Wimplicit-function-declaration]
+   52 |             *content_len = atoi(content_len_str);
+      |                            ^~~~
+http_prot.c:62:43: warning: conversion to 'long unsigned int' from 'long int' may change the sign of the result [-Wsign-conversion]
+   62 |     if (message == NULL || bytes_received - (message - stream) < *content_len || *content_len == 0) {
+      |                                           ^
+http_prot.c:62:64: warning: comparison of integer expressions of different signedness: 'long unsigned int' and 'int' [-Wsign-compare]
+   62 |     if (message == NULL || bytes_received - (message - stream) < *content_len || *content_len == 0) {
+      |                                                                ^
+http_prot.c:68:36: warning: conversion to 'long unsigned int' from 'long int' may change the sign of the result [-Wsign-conversion]
+   68 |     out->body.len = bytes_received - (message - stream);
+      |                                    ^
+http_prot.c: In function 'http_get_var':
+http_prot.c:76:17: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   76 |     char* val = url->val;
+      |                 ^~~
+http_prot.c:93:13: warning: assignment discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+   93 |         end = url->val + url->len;
+      |             ^
+http_prot.c:97:21: warning: comparison of integer expressions of different signedness: 'long int' and 'size_t' {aka 'long unsigned int'} [-Wsign-compare]
+   97 |     if (end - start > out_len) {
+      |                     ^
+http_prot.c:102:29: warning: conversion to 'size_t' {aka 'long unsigned int'} from 'long int' may change the sign of the result [-Wsign-conversion]
+  102 |     strncpy(out, start, end - start);
+      |                         ~~~~^~~~~~~
+http_prot.c:103:16: warning: conversion from 'long int' to 'int' may change value [-Wconversion]
+  103 |     return end - start;
+      |            ~~~~^~~~~~~
+http_prot.c:75:12: warning: unused variable 'len' [-Wunused-variable]
+   75 |     size_t len = url->len;
+      |            ^~~
+http_prot.c: In function 'http_match_verb':
+http_prot.c:110:17: warning: initialization discards 'const' qualifier from pointer target type [-Wdiscarded-qualifiers]
+  110 |     char* val = method->val;
+      |                 ^~~~~~
+In file included from http_prot.c:3:
+http_prot.c: In function 'get_next_token':
+error.h:69:20: warning: returning 'int' from a function with return type 'const char *' makes pointer from integer without a cast [-Wint-conversion]
+   69 |             return ERR_INVALID_ARGUMENT; \
+      |                    ^~~~~~~~~~~~~~~~~~~~
+http_prot.c:126:5: note: in expansion of macro 'M_REQUIRE_NON_NULL'
+  126 |     M_REQUIRE_NON_NULL(message); M_REQUIRE_NON_NULL(delimiter); M_REQUIRE_NON_NULL(output);
+      |     ^~~~~~~~~~~~~~~~~~
+error.h:69:20: warning: returning 'int' from a function with return type 'const char *' makes pointer from integer without a cast [-Wint-conversion]
+   69 |             return ERR_INVALID_ARGUMENT; \
+      |                    ^~~~~~~~~~~~~~~~~~~~
+http_prot.c:126:34: note: in expansion of macro 'M_REQUIRE_NON_NULL'
+  126 |     M_REQUIRE_NON_NULL(message); M_REQUIRE_NON_NULL(delimiter); M_REQUIRE_NON_NULL(output);
+      |                                  ^~~~~~~~~~~~~~~~~~
+error.h:69:20: warning: returning 'int' from a function with return type 'const char *' makes pointer from integer without a cast [-Wint-conversion]
+   69 |             return ERR_INVALID_ARGUMENT; \
+      |                    ^~~~~~~~~~~~~~~~~~~~
+http_prot.c:126:65: note: in expansion of macro 'M_REQUIRE_NON_NULL'
+  126 |     M_REQUIRE_NON_NULL(message); M_REQUIRE_NON_NULL(delimiter); M_REQUIRE_NON_NULL(output);
+      |                                                                 ^~~~~~~~~~~~~~~~~~
+http_prot.c:132:19: warning: conversion to 'size_t' {aka 'long unsigned int'} from 'long int' may change the sign of the result [-Wsign-conversion]
+  132 |     output->len = end_token - message;
+      |                   ^~~~~~~~~
+In file included from http_prot.c:3:
+http_prot.c: In function 'http_parse_headers':
+error.h:69:20: warning: returning 'int' from a function with return type 'const char *' makes pointer from integer without a cast [-Wint-conversion]
+   69 |             return ERR_INVALID_ARGUMENT; \
+      |                    ^~~~~~~~~~~~~~~~~~~~
+http_prot.c:138:5: note: in expansion of macro 'M_REQUIRE_NON_NULL'
+  138 |     M_REQUIRE_NON_NULL(header_start); M_REQUIRE_NON_NULL(output);
+      |     ^~~~~~~~~~~~~~~~~~
+error.h:69:20: warning: returning 'int' from a function with return type 'const char *' makes pointer from integer without a cast [-Wint-conversion]
+   69 |             return ERR_INVALID_ARGUMENT; \
+      |                    ^~~~~~~~~~~~~~~~~~~~
+http_prot.c:138:39: note: in expansion of macro 'M_REQUIRE_NON_NULL'
+  138 |     M_REQUIRE_NON_NULL(header_start); M_REQUIRE_NON_NULL(output);
+      |                                       ^~~~~~~~~~~~~~~~~~
+http_prot.c:75:12: warning: Value stored to 'len' during its initialization is never read [deadcode.DeadStores]
+    size_t len = url->len; 
+           ^~~   ~~~~~~~~
+1 warning generated.
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o image_content.o image_content.c
+image_content.c: In function 'lazily_resize':
+image_content.c:79:71: warning: conversion to 'long unsigned int' from 'long int' may change the sign of the result [-Wsign-conversion]
+   79 |     metadata->offset[resolution] = (uint64_t)(ftell(imgfs_file->file) - resized_size);
+      |                                                                       ^
+image_content.c:81:60: warning: conversion to 'long int' from 'long unsigned int' may change the sign of the result [-Wsign-conversion]
+   81 |     if(fseek(imgfs_file->file, sizeof(struct imgfs_header) + index * sizeof(struct img_metadata), SEEK_SET) ||
+      |                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from image_content.c:1:
+image_content.c: At top level:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o image_dedup.o image_dedup.c
+In file included from image_dedup.c:1:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+image_dedup.c:37:17: warning: Value stored to 'found_dup' is never read [deadcode.DeadStores]
+                found_dup = 1; 
+                ^           ~
+1 warning generated.
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_create.o imgfs_create.c
+In file included from imgfs_create.c:1:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_delete.o imgfs_delete.c
+In file included from imgfs_delete.c:1:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_insert.o imgfs_insert.c
+imgfs_insert.c: In function 'do_insert':
+imgfs_insert.c:23:68: warning: passing argument 3 of 'SHA256' from incompatible pointer type [-Wincompatible-pointer-types]
+   23 |             SHA256((const unsigned char*)image_buffer, image_size, &metadata->SHA);
+      |                                                                    ^~~~~~~~~~~~~~
+      |                                                                    |
+      |                                                                    unsigned char (*)[32]
+In file included from imgfs.h:23,
+                 from imgfs_insert.c:1:
+/usr/include/openssl/sha.h:82:72: note: expected 'unsigned char *' but argument is of type 'unsigned char (*)[32]'
+   82 | unsigned char *SHA256(const unsigned char *d, size_t n, unsigned char *md);
+      |                                                         ~~~~~~~~~~~~~~~^~
+imgfs_insert.c:32:32: warning: implicit declaration of function 'do_name_and_content_dedup' [-Wimplicit-function-declaration]
+   32 |             int is_duplicate = do_name_and_content_dedup(imgfs_file, i);
+      |                                ^~~~~~~~~~~~~~~~~~~~~~~~~
+imgfs_insert.c:45:81: warning: conversion to 'long unsigned int' from 'long int' may change the sign of the result [-Wsign-conversion]
+   45 |                 metadata->offset[ORIG_RES] = (uint64_t)(ftell(imgfs_file->file) - image_size);
+      |                                                                                 ^
+imgfs_insert.c:52:68: warning: conversion to 'long int' from 'long unsigned int' may change the sign of the result [-Wsign-conversion]
+   52 |             if(fseek(imgfs_file->file, sizeof(struct imgfs_header) + i * sizeof(struct img_metadata), SEEK_SET) ||
+      |                                        ~~~~~~~~~~~~~~~~~~~~~~~~~~~~^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+In file included from imgfs_insert.c:1:
+imgfs_insert.c: At top level:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_list.o imgfs_list.c
+imgfs_list.c: In function 'do_list':
+imgfs_list.c:47:76: warning: passing argument 1 of 'json_object_new_string' from incompatible pointer type [-Wincompatible-pointer-types]
+   47 |                 struct json_object * json_obj_str = json_object_new_string(&imgfs_file->metadata[i].img_id);
+      |                                                                            ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+      |                                                                            |
+      |                                                                            char (*)[128]
+In file included from /usr/include/json-c/json.h:27,
+                 from imgfs_list.c:5:
+/usr/include/json-c/json_object.h:926:68: note: expected 'const char *' but argument is of type 'char (*)[128]'
+  926 | JSON_EXPORT struct json_object *json_object_new_string(const char *s);
+      |                                                        ~~~~~~~~~~~~^
+imgfs_list.c:38:13: warning: variable 'is_image_found' set but not used [-Wunused-but-set-variable]
+   38 |         int is_image_found = 0;
+      |             ^~~~~~~~~~~~~~
+imgfs_list.c:37:18: warning: unused variable 'nbfiles' [-Wunused-variable]
+   37 |         uint32_t nbfiles = imgfs_file->header.nb_files;
+      |                  ^~~~~~~
+imgfs_list.c:14:9: warning: unused variable 'err' [-Wunused-variable]
+   14 |     int err;
+      |         ^~~
+In file included from imgfs_list.c:2:
+imgfs_list.c: At top level:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+imgfs_list.c:37:18: warning: Value stored to 'nbfiles' during its initialization is never read [deadcode.DeadStores]
+        uint32_t nbfiles = imgfs_file->header.nb_files; 
+                 ^~~~~~~   ~~~~~~~~~~~~~~~~~~~~~~~~~~~
+imgfs_list.c:54:17: warning: Value stored to 'is_image_found' is never read [deadcode.DeadStores]
+                is_image_found = 1;
+                ^                ~
+2 warnings generated.
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_read.o imgfs_read.c
+imgfs_read.c: In function 'do_read':
+imgfs_read.c:43:49: warning: conversion to 'long int' from 'uint64_t' {aka 'long unsigned int'} may change the sign of the result [-Wsign-conversion]
+   43 |     if (fseek(imgfs_file->file, metadata->offset[resolution], SEEK_SET) != 0 ||
+      |                                 ~~~~~~~~~~~~~~~~^~~~~~~~~~~~
+In file included from imgfs_read.c:1:
+imgfs_read.c: At top level:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_server_service.o imgfs_server_service.c
+In file included from imgfs_server_service.c:17:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+In file included from http_net.h:11,
+                 from imgfs_server_service.c:18:
+http_prot.h:93:32: warning: 'get_next_token' declared 'static' but never defined [-Wunused-function]
+   93 | static_unless_test const char* get_next_token(const char* message, const char* delimiter, struct http_string* output);
+      |                                ^~~~~~~~~~~~~~
+http_prot.h:105:32: warning: 'http_parse_headers' declared 'static' but never defined [-Wunused-function]
+  105 | static_unless_test const char* http_parse_headers(const char* header_start, struct http_message* output);
+      |                                ^~~~~~~~~~~~~~~~~~
+In file included from imgfs_server_service.c:18:
+http_net.h:39:14: warning: 'handle_connection' declared 'static' but never defined [-Wunused-function]
+   39 | static void* handle_connection(void* arg);
+      |              ^~~~~~~~~~~~~~~~~
+imgfs_server_service.c:102:12: warning: 'reply_302_msg' defined but not used [-Wunused-function]
+  102 | static int reply_302_msg(int connection)
+      |            ^~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfs_tools.o imgfs_tools.c
+In file included from imgfs_tools.c:8:
+imgfs.h:208:13: warning: 'create_name' declared 'static' but never defined [-Wunused-function]
+  208 | static void create_name(const char* img_id, int resolution, char** new_name);
+      |             ^~~~~~~~~~~
+imgfs.h:219:12: warning: 'write_disk_image' declared 'static' but never defined [-Wunused-function]
+  219 | static int write_disk_image(const char *filename, const char *image_buffer, uint32_t image_size);
+      |            ^~~~~~~~~~~~~~~~
+imgfs.h:230:12: warning: 'read_disk_image' declared 'static' but never defined [-Wunused-function]
+  230 | static int read_disk_image(const char *path, char **image_buffer, uint32_t *image_size);
+      |            ^~~~~~~~~~~~~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o imgfscmd_functions.o imgfscmd_functions.c
+imgfscmd_functions.c: In function 'read_disk_image':
+imgfscmd_functions.c:320:36: warning: conversion to 'size_t' {aka 'long unsigned int'} from 'long int' may change the sign of the result [-Wsign-conversion]
+  320 |     *image_buffer = (char *)malloc(size);
+      |                                    ^~~~
+imgfscmd_functions.c:327:30: warning: conversion to 'size_t' {aka 'long unsigned int'} from 'long int' may change the sign of the result [-Wsign-conversion]
+  327 |     if (fread(*image_buffer, size, 1, file) != 1) {
+      |                              ^~~~
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o socket_layer.o socket_layer.c
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fopenmp -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16 -pthread -I/usr/include/libgsf-1 -I/usr/include/libxml2 -I/usr/include/x86_64-linux-gnu//ImageMagick-6 -I/usr/include/ImageMagick-6 -I/usr/include/orc-0.4 -I/usr/include/OpenEXR -I/usr/include/openjpeg-2.4 -I/usr/include/poppler/glib -I/usr/include/poppler -I/usr/include/librsvg-2.0 -I/usr/include/gdk-pixbuf-2.0 -I/usr/include/openslide -I/usr/lib/x86_64-linux-gnu/hdf5/serial/include -I/usr/include/pango-1.0 -I/usr/include/harfbuzz -I/usr/include/pango-1.0 -I/usr/include/libmount -I/usr/include/blkid -I/usr/include/fribidi -I/usr/include/harfbuzz -I/usr/include/cairo -I/usr/include/pixman-1 -I/usr/include/uuid -I/usr/include/freetype2 -I/usr/include/x86_64-linux-gnu -I/usr/include/libpng16 -I/usr/include/glib-2.0 -I/usr/lib/x86_64-linux-gnu/glib-2.0/include -I/usr/include/json-c -g -pedantic -Wall -Wextra -Wfloat-equal -Wshadow -Wpointer-arith -Wbad-function-cast -Wwrite-strings -Wconversion -Wunreachable-code -Wcast-qual -W -Wformat=2 -Winit-self -Wuninitialized -Wcast-align -DWEEK=12 -fsanitize=address  -c -o util.o util.c
+/usr/share/clang/scan-build-14/bin/../libexec/ccc-analyzer -fsanitize=address  imgfscmd.o error.o http_net.o http_prot.o image_content.o image_dedup.o imgfs_create.o imgfs_delete.o imgfs_insert.o imgfs_list.o imgfs_read.o imgfs_server_service.o imgfs_tools.o imgfscmd_functions.o socket_layer.o util.o  -lvips -lgobject-2.0 -lglib-2.0 -ljson-c -fsanitize=address -lm -lssl -lcrypto -o imgfscmd
+scan-build: Analysis run complete.
+scan-build: 4 bugs found.
+scan-build: Run 'scan-view /tmp/scan-build-2024-06-03-220528-845-1' to examine bug reports.
