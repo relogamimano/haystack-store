@@ -40,8 +40,7 @@ It carefully reducde this per photo metadata so that Haystack storage machines c
 - Work with debugging tools (<-- this is key)
 
 
-# Requirements
-## Packages
+## Requirements and packages
 Install libssl-dev with the following command :
 
     sudo apt install libssl-dev libssl-doc
@@ -57,3 +56,11 @@ You will need the libjson library, which allows to parse and write data in JSON 
 If your on your own machine and haven't already done it, start by installing the libjson library:
 
     sudo apt install libjson-c-dev
+
+## Web UI
+To test the web server, simply launch the imgfs_server, then open http://localhost:8000/ in a web browser. You should get something like this (depending on the ImgFS with which you run your serve.
+
+
+
+
+
