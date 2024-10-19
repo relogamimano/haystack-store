@@ -1,0 +1,13 @@
+unit-test-imgfslist
+unit-test-imgfsstruct
+unit-test-imgfstools
+unit-test-http
+unit-test-imgfscontent
+unit-test-imgfscreate
+unit-test-imgfsdedup
+unit-test-imgfsdelete
+unit-test-imgfsinsert
+unit-test-imgfsread
+unit-test-imgfsresolutions
+
+*.o

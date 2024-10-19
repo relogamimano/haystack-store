@@ -1,0 +1,36 @@
+/home/ryang/cs202/cs202-24-fuzz-corpus/working/dedup-crashes/crash-ad59d98467f7fdff73ea8681aa75355ae38bd5b1
+==2274475==WARNING: AddressSanitizer failed to allocate 0xcdca2b0 bytes
+=================================================================
+==2274475==ERROR: AddressSanitizer: attempting double-free on 0x615000011380 in thread T0:
+    #0 0x56073a22b822 in __interceptor_free (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0xec822) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #1 0x7f3220054d26 in _IO_deallocate_file libio/./libio/libioP.h:862:3
+    #2 0x7f3220054d26 in fclose libio/./libio/iofclose.c:74:3
+    #3 0x56073a1fd80f in fclose (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0xbe80f) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #4 0x56073a281231 in do_close /home/ryang/cs202/cs202-24-fuzz-corpus/projects/cs202-24-prj-netrunners/./done/imgfs_tools.c:106:9
+    #5 0x56073a2775c8 in do_create_cmd /home/ryang/cs202/cs202-24-fuzz-corpus/projects/cs202-24-prj-netrunners/./done/imgfscmd_functions.c:156:5
+    #6 0x56073a274a44 in fuzz_main /home/ryang/cs202/cs202-24-fuzz-corpus/projects/cs202-24-prj-netrunners/./done/imgfscmd.c:57:23
+    #7 0x56073a26eb5a in LLVMFuzzerTestOneInput /home/ryang/cs202/cs202-24-fuzz-corpus/src/fuzz-target.c:106:13
+    #8 0x56073a18f453 in fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long) (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0x50453) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #9 0x56073a1791cf in fuzzer::RunOneTest(fuzzer::Fuzzer*, char const*, unsigned long) (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0x3a1cf) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #10 0x56073a17ef26 in fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long)) (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0x3ff26) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #11 0x56073a1a8d42 in main (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0x69d42) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #12 0x7f321ffffd8f in __libc_start_call_main csu/../sysdeps/nptl/libc_start_call_main.h:58:16
+    #13 0x7f321ffffe3f in __libc_start_main csu/../csu/libc-start.c:392:3
+    #14 0x56073a173a94 in _start (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0x34a94) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+
+DEDUP_TOKEN: __interceptor_free--_IO_deallocate_file--fclose--fclose--do_close--do_create_cmd--fuzz_main--LLVMFuzzerTestOneInput--fuzzer::Fuzzer::ExecuteCallback(unsigned char const*, unsigned long)--fuzzer::RunOneTest(fuzzer::Fuzzer*, char const*, unsigned long)--fuzzer::FuzzerDriver(int*, char***, int (*)(unsigned char const*, unsigned long))--main--__libc_start_call_main--__libc_start_main--_start
+0x615000011380 is located 0 bytes inside of 472-byte region [0x615000011380,0x615000011558)
+freed by thread T0 here:
+    #0 0x56073a22b822 in __interceptor_free (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0xec822) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #1 0x7f3220054d26 in _IO_deallocate_file libio/./libio/libioP.h:862:3
+    #2 0x7f3220054d26 in fclose libio/./libio/iofclose.c:74:3
+
+DEDUP_TOKEN: __interceptor_free--_IO_deallocate_file--fclose
+previously allocated by thread T0 here:
+    #0 0x56073a22bace in malloc (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0xecace) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d)
+    #1 0x7f322005564d in __fopen_internal libio/./libio/iofopen.c:65:37
+    #2 0x7f322005564d in fopen64 libio/./libio/iofopen.c:86:10
+
+DEDUP_TOKEN: malloc--__fopen_internal--fopen64
+SUMMARY: AddressSanitizer: double-free (/home/ryang/cs202/cs202-24-fuzz-corpus/working/build/cs202-24-prj-netrunners/fuzz-target+0xec822) (BuildId: 6d83b882f3fb125a1f9999d5a276f0423857498d) in __interceptor_free
+==2274475==ABORTING

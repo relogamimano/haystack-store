@@ -1,0 +1,15 @@
+dump*.imgfs
+
+# Ignores images output by reads
+*.jpg 
+!brouillard.jpg
+!coquelicots.jpg
+!coquelicots_small.jpg
+!coquelicots_thumb.jpg
+!foret.jpg
+!mure.jpg
+!papillon.jpg
+!pic1_orig.jpg
+!pic1_small.jpg
+!papillon256_256-8.12.1.jpg
+!papillon256_256-8.15.1.jpg

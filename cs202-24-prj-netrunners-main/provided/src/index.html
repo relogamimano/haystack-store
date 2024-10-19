@@ -1,0 +1,93 @@
+<html>
+<head>
+    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.10.1/jquery.min.js"></script>
+
+</head>
+<body>
+    <h3>ImgFS Images:</h3>
+    <table border="0" cellspacing="20">
+    </table>
+        <input type='file' name='up_file' id='up_file' style="display:none;"/>
+        <label for="up_file">Click here to upload</label>
+</body>
+
+<script>
+const server_port = 8000;
+
+const inputElement = document.getElementById("up_file");
+inputElement.addEventListener("change", handleInput, false);
+
+const MAX_IMAGE_BYTES = 5000 * 1000 // 5MB
+
+// If user clicks submit, read it into memory and trigger sendFileData()
+function handleInput() {
+  let image = this.files[0]
+  if (!image) return;
+  var f = image, r = new FileReader();
+  r.readAsArrayBuffer(f);
+  r.onload = function() {
+    console.log(`SELECTED IMAGE HAS SIZE: ${r.result.byteLength}`);
+    if (r.result.byteLength > MAX_IMAGE_BYTES) {
+      alert(`The selected image is bigger than ${MAX_IMAGE_BYTES} bytes. Operation not supported`);
+    } else {
+      sendFileData(f.name, new Uint8Array(r.result), MAX_IMAGE_BYTES);
+    }
+  };
+};
+
+
+var sendFileData = function(name, data, MAX_IMAGE_BYTES) {
+  var sendData = function() {
+    var opts = {method: 'POST', body: data};
+    var url = '/imgfs/insert?&name=' + encodeURIComponent(name);
+    fetch(url, opts).then(function(res) {
+      if (!res.ok) {
+        res.text().then(function(txt) {
+          alert(txt);
+        });
+        return;
+      }
+      window.location.reload();
+    });
+  };
+  sendData(0);
+};
+
+var getJSON = function(url) {
+  return new Promise(function(resolve, reject) {
+    var xhr = new XMLHttpRequest();
+    xhr.open('get', url, true);
+    xhr.responseType = 'json';
+    xhr.onload = function() {
+      var status = xhr.status;
+      if (status == 200) {
+        resolve(xhr.response);
+      } else {
+        reject(status);
+      }
+    };
+    xhr.send();
+  });
+};
+
+getJSON('http://localhost:' + server_port + '/imgfs/list').then(function(data) {
+    $(document).ready(function(){
+    for (var i = 0; i < data.Images.length; i++) {
+        var pic = data.Images[i];
+        $("table").append('<tr>' +
+          '<th> <a href="http://localhost:' + server_port + '/imgfs/read?res=orig&img_id='+pic+'" >' +
+          '<img border="0" alt="NoPic" src="http://localhost:' + server_port +
+              '/imgfs/read?res=thumb&img_id='+pic+'" ></a></th>' +
+          '<th>' + pic + '</th>' +
+          '<th></th>'+
+          '<th> <a href="http://localhost:' + server_port + '/imgfs/delete?img_id=' + pic + '" >' +
+          '<img border="0" alt="NoPic" src="http://findicons.com/files/icons/2015/24x24_free_application/24/erase.png" ></a></th>' +
+          '</tr>');
+    }
+    })
+}, function(status) {
+  alert('Something went wrong.');
+});
+
+</script>
+</html>

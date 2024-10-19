@@ -1,0 +1,9 @@
+*****************************************
+********** IMGFS HEADER START ***********
+TYPE: EPFL ImgFS 2024
+VERSION: 0
+IMAGE COUNT: 0		MAX IMAGES: 128
+THUMBNAIL: 64 x 64	SMALL: 216 x 216
+*********** IMGFS HEADER END ************
+*****************************************
+<< empty imgFS >>

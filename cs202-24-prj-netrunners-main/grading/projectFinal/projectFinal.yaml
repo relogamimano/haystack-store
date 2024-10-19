@@ -1,0 +1,152 @@
+- README:  2           # max 2, 
+- time.csv: 0           # max 3, no time.csv
+- imgfs.h: # NE PAS REMPLIR CETTE LIGNE
+     imgfs_header: 3       # max 3, 
+     imgfs_metadata: 3     # max 3, 
+     imgfs_file: 2         # max 2, 
+- imgfs_tools.c: # NE PAS REMPLIR CETTE LIGNE
+  - do_open: # NE PAS REMPLIR CETTE LIGNE
+       arguments tests:  1              # max 1, 
+       open + error test: 2.5             # max 2.5, 
+       read header + error test: 2.5      # max 2.5, 
+       alloc. dyn. + test: 2.5            # max 2.5, 
+       read metadata + error test: 2.5    # max 2.5, 
+  - do_close: 2.5                           # max 2.5, 
+- imgfs_list.c: # NE PAS REMPLIR CETTE LIGNE
+     argument tests: 0.5             # max 0.5, 
+     header print: 0.5               # max 0.5, 
+     empty case: 0.5                 # max 0.5, 
+     loop: 0.5                       # max 0.5, 
+     is_valid test: 1              # max 1, 
+     print_metadata: 0.5             # max 0.5, 
+     JSON: 12                       # max 15, -1 : no check is output str is null, -1 : no check for null when creating a json_object, -1 : no check if malloc returns null
+     error (default case): 0       # max 2, no handling of the default case
+- imgfs_create.c: # NE PAS REMPLIR CETTE LIGNE
+     argument tests: 0.5             # max 0.5, 
+     init (version, num_file): 1   # max 1, 
+     metadata alloc: 1.5             # max 1.5, 
+     is_valid init: 1.5              # max 1.5, 
+     open: 1                       # max 1, 
+     error test open: 1.25            # max 1.5, -0.25 : closing a file that failed to open,
+     write header: 1.5               # max 1.5, 
+     write metadata: 1.5             # max 1.5, 
+     print good value:  0.25          # max 0.5, print total only if successful, correction prints what is written even if there is a fail somewhere
+     error handling: 1.25             # max 1.5, -0.25 wrong error returned for metadata alloc,
+- imgfs_delete.c: # NE PAS REMPLIR CETTE LIGNE
+     argument tests: 0.5             # max 0.5, 
+     optimization empty DB: 0      # max 1, no optimization
+     search: 2.5                     # max 2.5, 
+     metadata rewrite: 2           # max 2.5, -0.5 : rewrite all of metadata on disk instead of the one metadata modified
+     header update: 1.5              # max 1.5, 
+     header rewrite: 2             # max 2, revert change in header when there is an error on the rewrite, but the metadata is already rewritten
+     error handling: 1.5             # max 1.5, 
+- image_content.c: # NE PAS REMPLIR CETTE LIGNE
+  - lazily_resize:  # NE PAS REMPLIR CETTE LIGNE
+       argument tests: 0.75               # max 1, -0.25 wrong error return when metadata is empty and comparison of metadata.size instead of metadata.offset
+       write at right position: 1      # max 1, 
+       error handling: 0.5               # max 1,  -0.5 fwrite return value not checked
+  - create_resized_img: # NE PAS REMPLIR CETTE LIGNE
+       read image: 5           # max 5, 
+       vips load: 2            # max 2.5, -0.5 object not unreferenced on error
+       vips resize: 2.5          # max 2.5, weird call to thumbnail_image but it passes the test, don't know if i should remove points
+       vips save: 2.5            # max 2.5, 
+       write: 3                # max 3, 
+       metadata update: 2      # max 2,
+       no leak (free): 2       # max 2, 
+       error handling: 1.5       # max 1.5, 
+- imgfscmd_functions.c: # NE PAS REMPLIR CETTE LIGNE
+      help: 1                   # max 1, 
+      do_list_cmd: 1.5            # max 1.5, 
+      do_create_cmd: 5.5          # max 6, -0.5 : No check on filename being NULL, don't print_header on success but handout doesn't say so
+      do_delete_cmd: 1.25          # max 1.5, -0.25 : struct not initialized
+      create_name: 1.25            # max 1.5, -0.25 : no check if new_name is null, uses snprintf instead of strcpy
+      read_disk_image: 3        # max 5, -2 : fails test
+      write_disk_image: 2       # max 2.5, -0.5 : close a file that failed to open
+- imgfscmd.c: # NE PAS REMPLIR CETTE LIGNE
+  - arguments: # NE PAS REMPLIR CETTE LIGNE
+      command type:  1                # max 1, 
+      struct command_mapping: 1       # max 1, 
+      mapping array:  1               # max 1, 
+  - parsing args in main(): 2.5         # max 2.5, 
+  - VIPS init + shutdown: 1           # max 1, no return after VIPS init fails but vips_error_exit() terminates the program, 
+- image_dedup.c: # NE PAS REMPLIR CETTE LIGNE
+  - compare SHA: 1          # max 1, 
+  - dedup:  # NE PAS REMPLIR CETTE LIGNE
+       argument tests: 0.25                 # max 0.5, -0.25 : index checked smaller than nb_files instead of max_files
+       search (incl. valid): 3           # max 3, 
+       duplicate id: 1.5                   # max 1.5, 
+       update duplicate content: 2       # max 2, 
+- imgfs_insert.c: # NE PAS REMPLIR CETTE LIGNE
+    arguments tests: 0.5               # max 0.5, 
+    optimisation base pleine: 0.5      # max 0.5, 
+    recherche place vide: 2          # max 2, 
+    gestion dedup: 2                 # max 2, 
+    écriture image sur disque: 2.5     # max 2.5, 
+    mise à jour metadata: 2.5          # max 2.5, 
+    récriture du header: 1.5           # max 1.5, 
+    gestion erreurs: 1.5               # max 1.5, 
+- imgfs_read.c: # NE PAS REMPLIR CETTE LIGNE
+    arguments tests: 0.25                 # max 0.5, -0.25 : no check on resolution value
+    optimisation base vide:   0        # max 1, no such optimization
+    recherche: 2                       # max 2, 
+    gestion lazy resize: 2             # max 2, 
+    lecture image depuis disque: 2.5     # max 2.5, 
+    gestion erreurs: 1.5                 # max 1.5,
+- socket_layer.c: # NE PAS REMPLIR CETTE LIGNE
+    tcp_server_init: 5            # max 5, 
+    tcp_accept: 1                 # max 1, 
+    tcp_read: 2                   # max 2, 
+    tcp_send: 2                    # max 2, 
+- http_net: # NE PAS REMPLIR CETTE LIGNE
+    - typedef EventCallback: 1                     # max 1, 
+    - handle_connection: # NE PAS REMPLIR CETTE LIGNE
+        arguments tests: 0.5                      # max 0.5, 
+        SIG mask: 0                             # max 1, not used
+        reception buffer managmt: 7             # max 7.5, receive buffer is not zero initialized -0.5
+        read: 2.5                                 # max 2.5, 
+        message parse (+ extend): 5            # max 5, 
+        callback call: 2                        # max 2, 
+        reset: 2.5                                # max 2.5, 
+        error handling: 3                       # max 3, 
+    - http_receive: # NE PAS REMPLIR CETTE LIGNE
+        arguments tests: 0.5                     # max 0.5, 
+        basic core: 3                           # max 3, 
+        multithreading: 0                       # max 7.5, not implemented at all
+    - http_reply: 10                         # max 10, 
+- http_prot.c: # NE PAS REMPLIR CETTE LIGNE
+    get_next_token: 3                 # max 3, 
+    http_parse_headers: 5              # max 5, 
+    get_header_value: 5                # max 5, 
+    parse_body: 3                      # max 3, 
+    http_parse_message: 1              # max 10, verb matching not used, HTTP version not checked -1
+    http_match_uri: 2                  # max 2, 
+    http_match_verb: 2                 # max 2, 
+    http_get_var: 10                    # max 10, 
+- network tests: # NE PAS REMPLIR CETTE LIGNE
+    tcp-test-client: 2.5                 # max 2.5, 
+    tcp-test-server: 2.5                 # max 2.5, 
+- imgfs_server_service.c: # NE PAS REMPLIR CETTE LIGNE
+    - mutex locks: 0                     # max 5.5, not implemented at all
+    - server_startup: 5                  # max 5, 
+    - adapt handle_http_message: 1       # max 1, 
+    - handle_list_call: 3                # max 3, 
+    - handle_read_call: # NE PAS REMPLIR CETTE LIGNE
+        arguments tests: 0.5                     # max 0.5, 
+        get resolution: 4                      # max 4, 
+        get image id: 1.5                        # max 1.5, 
+        read() call + reply: 2                 # max 4, errors, wrong err code returned in test, and res[100] is too large than what's needed -2
+    - handle_delete_call:  # NE PAS REMPLIR CETTE LIGNE
+        arguments tests: 0.5                   # max 0.5, 
+        get image id: 1.5                      # max 1.5, 
+        delete() call + reply: 3             # max 3, 
+    - handle_insert_call:  # NE PAS REMPLIR CETTE LIGNE
+        arguments tests: 1.5                 # max 1.5, 
+        get image id: 1.5                    # max 1.5, 
+        insert() call + reply: 3           # max 3, 
+- imgfs_server.c: # NE PAS REMPLIR CETTE LIGNE
+    signal_handler: 2                 # max 2, 
+    main(): 4                         # max 4, 
+- styleTA: -1             # max 2, min -2, (normal = 0), not clean, unused commented code -1
+- bonus/malusTA: 0       # max 5, min -5, (normal = 0), 
+- style: 0.5            # max 2, min -2, (normal = 0), +0.5 : comments and general readibility
+- bonus/malus: 2     # max 5, min -5, (normal = 0), potential malus for random DEFINE in imgfs_functions, +1 : memcpy in image_dedup, +1 : const in imgfs
