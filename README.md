@@ -2,7 +2,7 @@
 Haystack store file system
 
 
-# What I build :
+# What I built :
 ● A very simplified version of the Haystack store
 ● Stored as one file with
 ○ Header
