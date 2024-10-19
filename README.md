@@ -60,6 +60,10 @@ If your on your own machine and haven't already done it, start by installing the
 ## Web UI
 To test the web server, simply launch the imgfs_server, then open http://localhost:8000/ in a web browser. You should get something like this (depending on the ImgFS with which you run your serve.
 
+## Detailled instruction of the building process
+CS202 project website : https://projprogsys-epfl.github.io/project/index/foreword/
+
+
 
 
 
