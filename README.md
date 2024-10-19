@@ -12,3 +12,12 @@ Haystack store file system
 ● And also via a multi-threaded web server
 ○ socket layer programming
 ○ raw HTTP layer
+
+# What I learned
+● Do a guided project as a team of 2, collaborating using git
+● Work with the POSIX filesystem interface
+● Build a command-line interface with function pointers
+● Build a simple HTTP server
+● Work with libraries, e.g., libvips for image compression
+● Get feedback with unit tests
+● Work with debugging tools (<-- this is key)
