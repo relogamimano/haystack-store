@@ -1,6 +1,22 @@
 # haystack-store
 Haystack store file system
 
+This C project is the result of a semester long work for my CS202 (Computer Systems and Computer Network) cours at EPFL.
+
+It inspired by the Facebook 2010 “Haystack” system (OSDI 2010)
+
+Reference : https://research.facebook.com/file/1769847509889908/finding-a-needle-in-haystack-facebook-s-photo-storage.pdf
+
+This paper describes Haystack, an object storage system optimized for Facebook’s Photos application. As of 2010, Facebook stored over 260 billion images, which translates to over 20 petabytes of data. Users uploaded one billion new photos (∼60 terabytes) each week and Facebook served over one million images per second at peak.
+
+Haystack provides a less expensive and higher performing solution than the previous approach, which leveraged network attached storage appliances over NFS. The key observation is that this traditional design incurs an excessive number of disk operations because of metadata lookups.
+
+It carefully reducde this per photo metadata so that Haystack storage machines can perform all metadata lookups in main memory. This choice conserves disk operations for reading actual data and thus increases overall throughput.
+
+![image](https://github.com/user-attachments/assets/994f4c7c-3493-4f9b-a743-b47dd15f6887)
+![image](https://www.usenix.org/legacy/events/osdi10/tech/slides/beaver.pdf#page=4)
+
+
 
 # What I built :
 ● A very simplified version of the Haystack store
