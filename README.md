@@ -1,5 +1,6 @@
-# haystack-store
-Haystack store file system
+# Haystack store File system
+
+## Scalable file system for big data.
 
 This C project is the result of a semester long work for my CS202 (Computer Systems and Computer Network) cours at EPFL.
 
@@ -18,7 +19,7 @@ It carefully reducde this per photo metadata so that Haystack storage machines c
 ![image](https://github.com/user-attachments/assets/f4fcc510-948f-4f68-bca4-97cd67db94a6)
 
 
-# What I built :
+## What I built :
 ● A very simplified version of the Haystack store
 ● Stored as one file with
 ○ Header
@@ -29,7 +30,7 @@ It carefully reducde this per photo metadata so that Haystack storage machines c
 ○ socket layer programming
 ○ raw HTTP layer
 
-# What I learned
+## What I learned :
 ● Do a guided project as a team of 2, collaborating using git
 ● Work with the POSIX filesystem interface
 ● Build a command-line interface with function pointers
@@ -42,14 +43,14 @@ It carefully reducde this per photo metadata so that Haystack storage machines c
 # Requirements
 ## Packages
 Install libssl-dev with the following command :
-"""
-sudo apt install libssl-dev libssl-doc
-"""
+
+    sudo apt install libssl-dev libssl-doc
+
 
 To compile it, you need to add the ssl can crypto libraries. This is done by adding the -lssl and -lcrypto flags; e.g.:
-'''
-gcc -std=c99 -o sha sha.c -lssl -lcrypto
-'''
+
+    gcc -std=c99 -o sha sha.c -lssl -lcrypto
+
 
 You will need the libjson library, which allows to parse and write data in JSON format. 
 
