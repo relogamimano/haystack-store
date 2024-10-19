@@ -14,8 +14,8 @@ Haystack provides a less expensive and higher performing solution than the previ
 It carefully reducde this per photo metadata so that Haystack storage machines can perform all metadata lookups in main memory. This choice conserves disk operations for reading actual data and thus increases overall throughput.
 
 ![image](https://github.com/user-attachments/assets/994f4c7c-3493-4f9b-a743-b47dd15f6887)
-![image](https://www.usenix.org/legacy/events/osdi10/tech/slides/beaver.pdf#page=4)
-
+![image](https://github.com/user-attachments/assets/faed8730-35ee-48d1-b835-d631a3d48d4d)
+![image](https://github.com/user-attachments/assets/f4fcc510-948f-4f68-bca4-97cd67db94a6)
 
 
 # What I built :
@@ -37,3 +37,22 @@ It carefully reducde this per photo metadata so that Haystack storage machines c
 ● Work with libraries, e.g., libvips for image compression
 ● Get feedback with unit tests
 ● Work with debugging tools (<-- this is key)
+
+
+# Requirements
+## Packages
+Install libssl-dev with the following command :
+"""
+sudo apt install libssl-dev libssl-doc
+"""
+
+To compile it, you need to add the ssl can crypto libraries. This is done by adding the -lssl and -lcrypto flags; e.g.:
+'''
+gcc -std=c99 -o sha sha.c -lssl -lcrypto
+'''
+
+You will need the libjson library, which allows to parse and write data in JSON format. 
+
+If your on your own machine and haven't already done it, start by installing the libjson library:
+
+    sudo apt install libjson-c-dev
