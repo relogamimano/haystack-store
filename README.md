@@ -18,7 +18,9 @@ It carefully reducde this per photo metadata so that Haystack storage machines c
 ![image](https://github.com/user-attachments/assets/aefd6993-5819-4941-82ed-eca1ae800c99)
 ![image](https://github.com/user-attachments/assets/ded3abff-36dc-4a3b-8d8b-0dfa0f867839)
 
-You'll find all the code inside the cs202-24-prj-netrunners/ folder and the grade I got for this project inside the grade/ folder.  
+---
+
+<b>You'll find all the code inside the cs202-24-prj-netrunners/ folder and the grade I got for this project inside the grade/ folder.</b>
 
 ## What I built :
 - A very simplified version of the Haystack store
