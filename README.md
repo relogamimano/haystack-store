@@ -14,9 +14,9 @@ Haystack provides a less expensive and higher performing solution than the previ
 
 It carefully reducde this per photo metadata so that Haystack storage machines can perform all metadata lookups in main memory. This choice conserves disk operations for reading actual data and thus increases overall throughput.
 
-![image](https://github.com/user-attachments/assets/994f4c7c-3493-4f9b-a743-b47dd15f6887)
-![image](https://github.com/user-attachments/assets/faed8730-35ee-48d1-b835-d631a3d48d4d)
-![image](https://github.com/user-attachments/assets/f4fcc510-948f-4f68-bca4-97cd67db94a6)
+![image](https://github.com/user-attachments/assets/15b18af1-51c2-4f1c-9346-2eef00eeef05)
+![image](https://github.com/user-attachments/assets/aefd6993-5819-4941-82ed-eca1ae800c99)
+![image](https://github.com/user-attachments/assets/ded3abff-36dc-4a3b-8d8b-0dfa0f867839)
 
 
 ## What I built :
